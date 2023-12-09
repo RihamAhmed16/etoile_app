@@ -1,14 +1,23 @@
-import 'package:etoile_app/screens/login%20screen.dart';
+import 'package:etoile_app/screens/home.dart';
+import 'package:etoile_app/screens/introduction_screen.dart';
 import 'package:etoile_app/screens/signup%20screen.dart';
 import 'package:etoile_app/screens/welcome_screen.dart';
 import 'package:flutter/material.dart';
-
-void main() {
-  runApp(const MyApp());
+import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+int? isviewed;
+void main()async{
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    statusBarColor: Colors.transparent,
+  ));
+  WidgetsFlutterBinding.ensureInitialized();
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  isviewed = prefs.getInt('onBoard');
+  runApp( MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+
 
   // This widget is the root of your application.
   @override
@@ -20,15 +29,18 @@ class MyApp extends StatelessWidget {
 
       routes: {
         "/": (context) => Welcome(),
-        "/login": (context) => Login(),
+        "/login": (context) => MyApp(),
         "/signup": (context) => Signup(),
        // "/list": (context) => MyList(),
       // "/todo": (context) =>To(),
 
       },
-
-
+        home: BlocProvider(
+        create: (context) => SearchCubit(),
+    child: Home(),
+        )
     );
+
   }
 }
 

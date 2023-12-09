@@ -25,15 +25,25 @@ startTimer();
     Navigator.of(context).pushReplacementNamed("/login");
   }
   Widget build(BuildContext context) {
-    return  Container(
-
-      child: Image.asset("images/luanch.png",
-        fit: BoxFit.cover,
-        height: double.infinity,
-        width: double.infinity,
-        alignment: Alignment.center,),
-
-
+    return  Stack(
+      children: [
+        Positioned.fill(
+          child: Image.asset(
+            'images/background.jpg',
+            fit: BoxFit.cover,
+          ),
+        ),
+        // الصورة الثانية
+        Positioned.fill(
+          child: Image.asset(
+            'images/luanch.png',
+            //fit: BoxFit.contain,
+          ),
+        ),
+        
+        
+      ],
+      
     );
   }
 }
