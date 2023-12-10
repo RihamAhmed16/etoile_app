@@ -10,30 +10,30 @@ class TextFormWidget extends StatelessWidget {
     this.keyboardType = TextInputType.emailAddress,
     this.validator,
     this.onSaved,
-    this.suffix,
-    this.suffixPress, this.isPassword= false,
+    this.suffixPress,
+    this.suffixIcon,
+    this.isObscuredText,
   });
 
-  final IconData? suffix;
+  final Widget? suffixIcon;
+  final bool? isObscuredText;
   final String? Function(String?)? validator;
   final TextEditingController controller;
   final String hintText;
   final TextInputType? keyboardType;
   final void Function(String?)? onSaved;
   final Function()? suffixPress;
-final bool ? isPassword ;
+
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       onSaved: onSaved,
-      obscureText: false,
+      obscureText: isObscuredText ?? false,
       cursorColor: AppColors.buttonColor,
       keyboardType: keyboardType,
       validator: validator,
       decoration: InputDecoration(
-        suffixIcon: suffix != null
-            ? IconButton(onPressed: suffixPress, icon: Icon(suffix))
-            : null,
+        suffixIcon: suffixIcon,
         enabledBorder: OutlineInputBorder(
           borderSide: BorderSide(
             color: Colors.grey.withOpacity(.4),
@@ -69,7 +69,6 @@ final bool ? isPassword ;
         ),
       ),
       maxLines: 1,
-      clipBehavior: Clip.hardEdge,
       controller: controller,
     );
   }

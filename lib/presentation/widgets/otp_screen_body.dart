@@ -10,11 +10,10 @@ import 'build_text_otp_screen.dart';
 class OtpScreenBody extends StatelessWidget {
   const OtpScreenBody({Key? key}) : super(key: key);
 
-
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 32, vertical: 88),
+      margin: EdgeInsets.symmetric(horizontal: 32, vertical: 88,),
       child: Column(
         children: [
           BuildIntroText(),
@@ -34,14 +33,17 @@ class OtpScreenBody extends StatelessWidget {
               },
               child: Text(
                 'Verify',
-                style: TextStyle(color: Colors.white, fontSize: 16),
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                ),
               ),
               style: ElevatedButton.styleFrom(
                   minimumSize: Size(110, 50),
                   backgroundColor: AppColors.buttonColor,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(6),
-                  )),
+                  ),),
             ),
           ),
           BuildCodeVerificationBloc(),

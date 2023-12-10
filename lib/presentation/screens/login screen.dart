@@ -19,6 +19,7 @@ class _LoginState extends State<Login> {
 
   late TextEditingController passwordController;
   final GlobalKey<FormState> formKey = GlobalKey();
+  bool isObscuredText = true;
 
   @override
   void initState() {
@@ -87,13 +88,18 @@ class _LoginState extends State<Login> {
                           height: MediaQuery.of(context).size.height * .017),
                       TextFormWidget(
                           controller: passwordController,
-                          isPassword: LogInCubit.get(context).isPassword,
-                          suffix: LogInCubit.get(context).isPassword
-                              ? Icons.visibility_outlined
-                              : Icons.visibility_off_outlined,
-                          suffixPress: () {
-                            LogInCubit.get(context).ChangePasswordVisability();
-                          },
+                          suffixIcon: GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                isObscuredText = !isObscuredText;
+                              });
+                            },
+                            child: Icon(
+                              isObscuredText
+                                  ? Icons.visibility_off
+                                  : Icons.visibility,
+                            ),
+                          ),
                           validator: (value) {
                             if (value!.isEmpty) {
                               return 'Please enter your Password';
@@ -116,7 +122,7 @@ class _LoginState extends State<Login> {
                             formKey.currentState!.save();
                             LogInCubit.get(context).userLogin(
                                 email: emailController.text,
-                                password:passwordController.text);
+                                password: passwordController.text);
                           }
                         },
                       ),

@@ -15,7 +15,6 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-
   Bloc.observer = MyBlocObserver();
   FirebaseAuth.instance.authStateChanges().listen((user) {
     if (user == null) {
@@ -46,6 +45,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
+        useMaterial3: false,
           appBarTheme: AppBarTheme(
         backgroundColor: Colors.transparent,
         iconTheme: IconThemeData(
