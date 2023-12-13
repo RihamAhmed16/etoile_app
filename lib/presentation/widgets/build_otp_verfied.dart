@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../bussines_logic/signup_cubit/auth_cubit.dart';
 import '../../helper/methods/show_progress_indicator.dart';
 class BuildCodeVerificationBloc extends StatelessWidget {
-  const BuildCodeVerificationBloc({Key? key}) : super(key: key);
+  const BuildCodeVerificationBloc({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -4,11 +4,12 @@ import 'package:etoile_app/helper/methods/toast_message.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../constance/colors.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/text_form_widget.dart';
 
 class Login extends StatefulWidget {
-  const Login({Key? key}) : super(key: key);
+  const Login({super.key});
 
   @override
   State<Login> createState() => _LoginState();
@@ -114,6 +115,8 @@ class _LoginState extends State<Login> {
                         height: MediaQuery.of(context).size.height * .03,
                       ),
                       CustomButton(
+                        width:double.infinity,
+                        buttonColor: AppColors.buttonColor,
                         text: 'LOG IN',
                         onPressed: () {
                           if (!formKey.currentState!.validate()) {
@@ -132,7 +135,7 @@ class _LoginState extends State<Login> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text('You Don\'t Have An Account ?'),
+                          const Text('You Don\'t Have An Account ?'),
                           const SizedBox(
                             width: 4,
                           ),
@@ -141,7 +144,7 @@ class _LoginState extends State<Login> {
                               Navigator.pushNamed(
                                   context, AppStrings.signUpScreen);
                             },
-                            child: Text(
+                            child: const Text(
                               'SIGN UP',
                               style: TextStyle(fontWeight: FontWeight.bold),
                             ),

@@ -7,7 +7,7 @@ import '../../constance/strings.dart';
 import '../../helper/methods/show_progress_indicator.dart';
 
 class BuildPhoneNumberSubmitedBloc extends StatelessWidget {
-  const BuildPhoneNumberSubmitedBloc({Key? key}) : super(key: key);
+  const BuildPhoneNumberSubmitedBloc({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -8,19 +8,19 @@ import 'build_otp_verfied.dart';
 import 'build_text_otp_screen.dart';
 
 class OtpScreenBody extends StatelessWidget {
-  const OtpScreenBody({Key? key}) : super(key: key);
+  const OtpScreenBody({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 32, vertical: 88,),
+      margin: const EdgeInsets.symmetric(horizontal: 32, vertical: 88,),
       child: Column(
         children: [
-          BuildIntroText(),
+          const BuildIntroText(),
           const SizedBox(
             height: 88,
           ),
-          PinCode(),
+          const PinCode(),
           const SizedBox(
             height: 60,
           ),
@@ -31,22 +31,22 @@ class OtpScreenBody extends StatelessWidget {
                 showProgressIndicator(context);
                 login(context);
               },
-              child: Text(
+              style: ElevatedButton.styleFrom(
+                  minimumSize: const Size(110, 50),
+                  backgroundColor: AppColors.buttonColor,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(6),
+                  ),),
+              child: const Text(
                 'Verify',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 16,
                 ),
               ),
-              style: ElevatedButton.styleFrom(
-                  minimumSize: Size(110, 50),
-                  backgroundColor: AppColors.buttonColor,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(6),
-                  ),),
             ),
           ),
-          BuildCodeVerificationBloc(),
+          const BuildCodeVerificationBloc(),
         ],
       ),
     );

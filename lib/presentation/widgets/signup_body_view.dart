@@ -228,6 +228,8 @@ class _SignupBodyViewState extends State<SignupBodyView> {
                     ),
                     condition: state is! LoadingAuthState,
                     builder: (context) => CustomButton(
+                      width:double.infinity,
+                      buttonColor: AppColors.buttonColor,
                       text: 'Submit',
                       onPressed: () async {
                         print('pressed');

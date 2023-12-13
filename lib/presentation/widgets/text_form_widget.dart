@@ -39,29 +39,29 @@ class TextFormWidget extends StatelessWidget {
             color: Colors.grey.withOpacity(.4),
             style: BorderStyle.solid,
           ),
-          borderRadius: BorderRadius.all(Radius.circular(7)),
+          borderRadius: const BorderRadius.all(Radius.circular(7)),
         ),
-        contentPadding: EdgeInsets.symmetric(horizontal: 10),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 10),
         disabledBorder: OutlineInputBorder(
           borderSide: BorderSide(
             color: Colors.grey.withOpacity(.4),
             style: BorderStyle.solid,
           ),
-          borderRadius: BorderRadius.all(Radius.circular(7)),
+          borderRadius: const BorderRadius.all(Radius.circular(7)),
         ),
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(
             color: Colors.grey.withOpacity(.4),
             style: BorderStyle.solid,
           ),
-          borderRadius: BorderRadius.all(Radius.circular(7)),
+          borderRadius: const BorderRadius.all(Radius.circular(7)),
         ),
         border: OutlineInputBorder(
           borderSide: BorderSide(
             color: Colors.grey.withOpacity(.4),
             style: BorderStyle.solid,
           ),
-          borderRadius: BorderRadius.all(Radius.circular(7)),
+          borderRadius: const BorderRadius.all(Radius.circular(7)),
         ),
         hintText: hintText,
         hintStyle: TextStyle(

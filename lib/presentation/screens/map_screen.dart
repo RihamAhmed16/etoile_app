@@ -2,12 +2,11 @@ import 'package:etoile_app/constance/strings.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_place_picker_mb/google_maps_place_picker.dart';
-import 'dart:io' show Platform;
 import 'package:google_maps_flutter_android/google_maps_flutter_android.dart';
 import 'package:google_maps_flutter_platform_interface/google_maps_flutter_platform_interface.dart';
 
 class MapScreen extends StatefulWidget {
-  MapScreen({Key? key}) : super(key: key);
+  MapScreen({super.key});
   final GoogleMapsFlutterPlatform mapsImplementation =
       GoogleMapsFlutterPlatform.instance;
 
@@ -46,7 +45,7 @@ class _MapScreenState extends State<MapScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("Google Map Place Picker Demo"),
+          title: const Text("Google Map Place Picker Demo"),
         ),
         body: Center(
           child: Column(
@@ -70,7 +69,7 @@ class _MapScreenState extends State<MapScreen> {
                                 .useAndroidViewSurface = value;
                           });
                         }),
-                    Text("Hybrid Composition"),
+                    const Text("Hybrid Composition"),
                   ]
                 ],
               ),
@@ -80,7 +79,7 @@ class _MapScreenState extends State<MapScreen> {
                   if (!_mapsInitialized &&
                       widget.mapsImplementation
                           is GoogleMapsFlutterAndroid) ...[
-                    Text("Renderer: "),
+                    const Text("Renderer: "),
                     Radio(
                         groupValue: _mapsRenderer,
                         value: "auto",
@@ -89,7 +88,7 @@ class _MapScreenState extends State<MapScreen> {
                             _mapsRenderer = "auto";
                           });
                         }),
-                    Text("Auto"),
+                    const Text("Auto"),
                     Radio(
                         groupValue: _mapsRenderer,
                         value: "legacy",
@@ -98,7 +97,7 @@ class _MapScreenState extends State<MapScreen> {
                             _mapsRenderer = "legacy";
                           });
                         }),
-                    Text("Legacy"),
+                    const Text("Legacy"),
                     Radio(
                         groupValue: _mapsRenderer,
                         value: "latest",
@@ -107,13 +106,13 @@ class _MapScreenState extends State<MapScreen> {
                             _mapsRenderer = "latest";
                           });
                         }),
-                    Text("Latest"),
+                    const Text("Latest"),
                   ]
                 ],
               ),
               !_showPlacePickerInContainer
                   ? ElevatedButton(
-                      child: Text("Load Place Picker"),
+                      child: const Text("Load Place Picker"),
                       onPressed: () {
                         initRenderer();
                         Navigator.push(
@@ -128,7 +127,7 @@ class _MapScreenState extends State<MapScreen> {
                                 searchingText: "Please wait ...",
                                 selectText: "Select place",
                                 outsideOfPickAreaText: "Place not in area",
-                                initialPosition: LatLng(
+                                initialPosition: const LatLng(
                                     31.210412195415234, 30.038485648950484),
                                 useCurrentLocation: true,
                                 selectInitialPosition: true,
@@ -161,7 +160,7 @@ class _MapScreenState extends State<MapScreen> {
                   : Container(),
               !_showPlacePickerInContainer
                   ? ElevatedButton(
-                      child: Text("Load Place Picker in Container"),
+                      child: const Text("Load Place Picker in Container"),
                       onPressed: () {
                         initRenderer();
                         setState(() {
@@ -169,7 +168,7 @@ class _MapScreenState extends State<MapScreen> {
                         });
                       },
                     )
-                  : Container(
+                  : SizedBox(
                       width: MediaQuery.of(context).size.width * 0.75,
                       height: MediaQuery.of(context).size.height * 0.35,
                       child: PlacePicker(
@@ -178,7 +177,7 @@ class _MapScreenState extends State<MapScreen> {
                           searchingText: "Please wait ...",
                           selectText: "Select place",
                           initialPosition:
-                              LatLng(31.210412195415234, 30.038485648950484),
+                              const LatLng(31.210412195415234, 30.038485648950484),
                           useCurrentLocation: true,
                           selectInitialPosition: true,
                           usePinPointingSearch: true,
@@ -199,17 +198,13 @@ class _MapScreenState extends State<MapScreen> {
                           })),
               if (selectedPlace != null) ...[
                 Text(selectedPlace!.formattedAddress!),
-                Text("(lat: " +
-                    selectedPlace!.geometry!.location.lat.toString() +
-                    ", lng: " +
-                    selectedPlace!.geometry!.location.lng.toString() +
-                    ")"),
+                Text("(lat: ${selectedPlace!.geometry!.location.lat}, lng: ${selectedPlace!.geometry!.location.lng})"),
               ],
               // #region Google Map Example without provider
               _showPlacePickerInContainer
                   ? Container()
                   : ElevatedButton(
-                      child: Text("Toggle Google Map w/o Provider"),
+                      child: const Text("Toggle Google Map w/o Provider"),
                       onPressed: () {
                         initRenderer();
                         setState(() {
@@ -228,7 +223,7 @@ class _MapScreenState extends State<MapScreen> {
                         zoomControlsEnabled: false,
                         myLocationButtonEnabled: false,
                         mapToolbarEnabled: false,
-                        initialCameraPosition: new CameraPosition(
+                        initialCameraPosition: const CameraPosition(
                             target:
                                 LatLng(31.210412195415234, 30.038485648950484),
                             zoom: 15),
@@ -239,7 +234,7 @@ class _MapScreenState extends State<MapScreen> {
                         onCameraMoveStarted: () {},
                         onCameraMove: (CameraPosition position) {},
                       )),
-              !_showGoogleMapInContainer ? Container() : TextField(),
+              !_showGoogleMapInContainer ? Container() : const TextField(),
               // #endregion
             ],
           ),

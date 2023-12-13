@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:carousel_slider/carousel_controller.dart';
 
@@ -23,44 +24,78 @@ class _SliderPState extends State<SliderP> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Color.fromARGB(255, 40, 40, 35),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            CarouselSlider.builder(
-                carouselController: controller,
-                itemCount: urlImages.length,
-                itemBuilder: (context, index, realIndex) {
-                  final urlImage = urlImages[index];
-                  return buildImage(urlImage, index);
-                },
-                options: CarouselOptions(
-                    height: 400,
-                    autoPlay: true,
-                    enableInfiniteScroll: false,
-                    autoPlayAnimationDuration: Duration(seconds: 2),
-                    enlargeCenterPage: true,
-                    onPageChanged: (index, reason) =>
-                        setState(() => activeIndex = index))),
-            SizedBox(height: 12),
-            buildIndicator()
-          ],
+    return Stack(
+      clipBehavior: Clip.none,
+      alignment: Alignment.bottomCenter,
+      children: [
+        CarouselSlider.builder(
+          carouselController: controller,
+          disableGesture: true,
+          itemCount: urlImages.length,
+          itemBuilder: (context, index, realIndex) {
+            final urlImage = urlImages[index];
+            return buildImage(urlImage, index);
+          },
+          options: CarouselOptions(
+            aspectRatio: 3.4,
+            autoPlay: true,
+            disableCenter: true,
+            animateToClosest: false,
+            enableInfiniteScroll: false,
+            autoPlayAnimationDuration: const Duration(seconds: 2),
+            onPageChanged: (index, reason) =>
+                setState(() => activeIndex = index),
+          ),
         ),
-      ),
+        Padding(
+          padding: EdgeInsets.symmetric(vertical: 2.h),
+          child: Align(
+            alignment: AlignmentDirectional.bottomCenter,
+            child: buildIndicator(),
+          ),
+        )
+      ],
     );
   }
 
   Widget buildIndicator() => AnimatedSmoothIndicator(
-    onDotClicked: animateToSlide,
-    effect: ExpandingDotsEffect(dotWidth: 15, activeDotColor: Colors.blue),
-    activeIndex: activeIndex,
-    count: urlImages.length,
-  );
+        onDotClicked: animateToSlide,
+        effect: CustomizableEffect(
+          dotDecoration: DotDecoration(
+            borderRadius: BorderRadius.circular(20),
+            color: Colors.white.withOpacity(.4),
+            dotBorder: const DotBorder(
+              width: 1,
+              color: Colors.white,
+            ),
+            height: 12.h,
+            width: 12.w,
+          ),
+          activeDotDecoration: DotDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20),
+            width: 12.h,
+            height: 12.w,
+            dotBorder: const DotBorder(
+              width: 1,
+              color: Colors.white,
+            ),
+          ),
+          spacing: 5,
+        ),
+        activeIndex: activeIndex,
+        count: urlImages.length,
+      );
 
   void animateToSlide(int index) => controller.animateToPage(index);
 }
 
-Widget buildImage(String urlImage, int index) =>
-    Container(child: Image.network(urlImage, fit: BoxFit.cover));
+Widget buildImage(String urlImage, int index) => Container(
+      width: double.infinity,
+      margin: EdgeInsets.symmetric(horizontal: 5.w),
+      decoration: BoxDecoration(
+        image:
+            DecorationImage(image: AssetImage(urlImage), fit: BoxFit.fitHeight),
+        borderRadius: BorderRadius.circular(16),
+      ),
+    );

@@ -1,6 +1,7 @@
 import 'package:etoile_app/bussines_logic/login_cubit/log_in_cubit.dart';
 import 'package:etoile_app/constance/strings.dart';
-import 'package:etoile_app/presentation/screens/homeScreen.dart';
+import 'package:etoile_app/presentation/screens/home.dart';
+import 'package:etoile_app/presentation/screens/introduction_screen.dart';
 import 'package:etoile_app/presentation/screens/login%20screen.dart';
 import 'package:etoile_app/presentation/screens/map_screen.dart';
 import 'package:etoile_app/presentation/screens/otp_screen.dart';
@@ -25,6 +26,10 @@ class AppRouter {
             child: const Login(),
           ),
         );
+      case AppStrings.onBoardingScreen:
+        return MaterialPageRoute(
+            builder: (_)=>  OnBoardScreen(),
+        );
       case AppStrings.signUpScreen:
         return MaterialPageRoute(
           builder: (_) => BlocProvider<SignUpCubit>.value(
@@ -34,7 +39,7 @@ class AppRouter {
         );
       case AppStrings.homeScreen:
         return MaterialPageRoute(
-          builder: (_) => const HomeScreen(),
+          builder: (_) => const Home(),
         );
       case AppStrings.MapScreen:
         return MaterialPageRoute(

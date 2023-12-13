@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import '../widgets/otp_screen_body.dart';
 
 class OtpScreen extends StatelessWidget {
-  const OtpScreen({Key? key, required this.phoneNumber}) : super(key: key);
+  const OtpScreen({super.key, required this.phoneNumber});
 final String phoneNumber;
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
+    return const SafeArea(
         child: Scaffold(
           body: OtpScreenBody(),
         ),

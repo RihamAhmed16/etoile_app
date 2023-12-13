@@ -5,5 +5,6 @@ abstract class AppStrings {
   static const homeScreen = '/homeScreen';
   static const MapScreen = '/mapScreen';
   static const splashImage = 'assets/images/splash.png';
- static const apiKey = "AIzaSyCe-VvCRJ4QrO2OfqXAcz5-Y19_PW84L7U";
+  static const onBoardingScreen = '/introductionScreen';
+  static const apiKey = "AIzaSyCe-VvCRJ4QrO2OfqXAcz5-Y19_PW84L7U";
 }

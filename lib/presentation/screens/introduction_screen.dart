@@ -1,37 +1,120 @@
-import 'package:etoile_app/intro_pages/intro_page1.dart';
-import 'package:etoile_app/intro_pages/intro_page2.dart';
-import 'package:etoile_app/main.dart';
-import 'package:etoile_app/screens/home.dart';
-import 'package:etoile_app/screens/signup%20screen.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:etoile_app/constance/colors.dart';
+import 'package:etoile_app/constance/strings.dart';
+import 'package:etoile_app/data/models/onboarding_model.dart';
+import 'package:etoile_app/presentation/widgets/build_onboard_item.dart';
+import 'package:etoile_app/presentation/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../helper/cach_helper.dart';
 
-class MyApp extends StatefulWidget {
-  MyApp ({Key? key}) : super(key: key);
+class OnBoardScreen extends StatefulWidget {
+  const OnBoardScreen({super.key});
 
   @override
-  _MyAppState createState() => _MyAppState();
-
+  _OnBoardScreenState createState() => _OnBoardScreenState();
 }
 
-class _MyAppState extends State<MyApp > {
-  PageController _controller= PageController();
+class _OnBoardScreenState extends State<OnBoardScreen> {
+  PageController _controller = PageController();
 
-  bool onLastPage=false;
+  bool isLast = false;
+
+  void submit() {
+    CashHelper.saveData(
+      key: 'onBoarding',
+      value: true,
+    ).then((value) {
+      if (value??true) {
+        Navigator.pushNamedAndRemoveUntil(
+            context, AppStrings.homeScreen, (route) => false);
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    return  MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        actions: [
+          TextButton(
+            style: ButtonStyle(
+              padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
+              EdgeInsets.zero,
+            ),
+              overlayColor: MaterialStateProperty.all<Color>(Colors.transparent),
+            ),
+            onPressed:submit,
+            child:const Text('Skip',style: TextStyle(fontWeight: FontWeight.bold,color: Colors.black),),
+          ),
+        ],
       ),
-      home: isviewed != 0 ? Signup() : Home(),
+      backgroundColor: const Color.fromARGB(250, 250, 250, 250),
+      body: Column(
+        children: [
+          Expanded(
+            flex: 4,
+            child: Container(
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(40),
+                  bottomRight: Radius.circular(40),
+                ),
+              ),
+              child: PageView.builder(
+                controller: _controller,
+                onPageChanged: (index) {
+                  if (index == boarding.length) {
+                    setState(() {
+                      isLast = true;
+                    });
+                  } else {
+                    setState(() {
+                      isLast = false;
+                    });
+                  }
+                },
+                physics: const BouncingScrollPhysics(),
+                itemBuilder: (context, index) =>
+                    BuildOnBoardItem(model: boarding[index], index: index),
+                itemCount: boarding.length,
+              ),
+            ),
+          ),
+          Expanded(
+            flex: 1,
+            child: Padding(
+              padding:  EdgeInsets.symmetric(horizontal: 20.w),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: CustomButton(
+                      text: 'Sign In',
+                      width: double.infinity,
+                      buttonColor: AppColors.buttonColor,
+                      verticalPadding: 15.h,
+                    ),
+                  ),
+                   SizedBox(
+                    width: 20.w,
+                  ),
+                  Expanded(
+                    child: CustomButton(
+                      text: 'Sign Up',
+                      width: double.infinity,
+                      buttonColor: AppColors.lightBlack,
+                      verticalPadding: 15.h,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
-
-
