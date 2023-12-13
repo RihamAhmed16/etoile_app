@@ -12,7 +12,7 @@ class BuildItemCategoriesListView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: 200.w,
-      height: 50.h,
+      height: 35.h,
       margin: EdgeInsets.symmetric(horizontal: 5.h),
       padding: EdgeInsets.only(right: 4.w),
       decoration: BoxDecoration(
@@ -26,9 +26,9 @@ class BuildItemCategoriesListView extends StatelessWidget {
             flex: 2,
             child: ClipRRect(
               borderRadius: const BorderRadius.all(Radius.circular(10)),
-              child: Image.asset(
-                'assets/images/slider1.png',
-                height: 50.h,
+              child: Image.network(
+                'https://t3.ftcdn.net/jpg/00/78/46/66/240_F_78466601_5nXFPeyzmHIBahgGWDYuVbcLxIjALcQG.jpg',
+                height: 35.h,
                 fit: BoxFit.cover,
               ),
             ),
