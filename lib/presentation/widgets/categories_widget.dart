@@ -27,7 +27,7 @@ class CategoriesWidget extends StatelessWidget {
           ),
         ),
         SizedBox(
-          height: 50.h,
+          height: 35.h,
           child: ListView.builder(
             itemCount: 8,
             scrollDirection: Axis.horizontal,
