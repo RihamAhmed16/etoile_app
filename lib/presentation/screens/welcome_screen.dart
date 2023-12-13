@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 
 class Welcome extends StatefulWidget {
-  const Welcome({Key? key}) : super(key: key);
+  const Welcome({super.key});
 
   @override
   State<Welcome> createState() => _WelcomeState();
@@ -18,12 +18,13 @@ startTimer();
   }
 
   startTimer(){
-    var duration= Duration(seconds:2);
+    var duration= const Duration(seconds:2);
     return Timer(duration,route);
   }
   route(){
     Navigator.of(context).pushReplacementNamed("/login");
   }
+  @override
   Widget build(BuildContext context) {
     return  Stack(
       children: [
