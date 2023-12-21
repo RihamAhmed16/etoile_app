@@ -20,7 +20,7 @@ void main() async {
   );
   Bloc.observer = MyBlocObserver();
   bool? onBoarding = CashHelper.getData(key: "onBoarding");
-  if (onBoarding != null) {
+  if (onBoarding == true) {
     initialRoute = AppStrings.homeScreen;
   } else {
     initialRoute = AppStrings.onBoardingScreen;
@@ -47,7 +47,6 @@ class MyApp extends StatelessWidget {
       designSize: const Size(360, 690),
       minTextAdapt: true,
       child: MaterialApp(
-        useInheritedMediaQuery: true,
         locale: DevicePreview.locale(context),
         builder: DevicePreview.appBuilder,
         theme: ThemeData(

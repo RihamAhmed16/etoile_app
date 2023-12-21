@@ -1,12 +1,12 @@
 import 'package:etoile_app/constance/colors.dart';
+import 'package:etoile_app/data/models/home_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class BestSellerItem extends StatelessWidget {
-  const BestSellerItem({super.key, required this.image});
+  const BestSellerItem({super.key, required this.bestSellerModel});
 
-  final String image;
-
+final HomeModel bestSellerModel;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -32,7 +32,7 @@ class BestSellerItem extends StatelessWidget {
             flex: 3,
             child: Container(
               decoration: const BoxDecoration(),
-              child: Image.asset(image),
+              child: Image.network(bestSellerModel.image??''),
             ),
           ),
           Expanded(
@@ -53,15 +53,15 @@ class BestSellerItem extends StatelessWidget {
                 SizedBox(
                   width: 10.w,
                 ),
-                const Text('Vanilla Gateau'),
+                 Expanded(child: Text(bestSellerModel.name??'')),
               ],
             ),
           ),
           Padding(
             padding: EdgeInsets.only(left: 15.w),
-            child: const Text(
-              '24 EGP',
-              style: TextStyle(fontWeight: FontWeight.w700),
+            child:  Text(
+              '${bestSellerModel.price ??''} EGP',
+              style: const TextStyle(fontWeight: FontWeight.w700),
             ),
           ),
           SizedBox(
