@@ -1,12 +1,13 @@
 import 'package:etoile_app/constance/colors.dart';
+import 'package:etoile_app/data/models/home_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'build_categories_list_view.dart';
 
 class CategoriesWidget extends StatelessWidget {
-  const CategoriesWidget({super.key});
-
+  const CategoriesWidget({super.key, required this.categoriesModel});
+final List<HomeModel> categoriesModel;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -29,10 +30,10 @@ class CategoriesWidget extends StatelessWidget {
         SizedBox(
           height: 35.h,
           child: ListView.builder(
-            itemCount: 8,
+            itemCount: categoriesModel.length,
             scrollDirection: Axis.horizontal,
             itemBuilder: (context, index) => BuildItemCategoriesListView(
-              categoriesName: categoriesName[index],
+              categoriesModel: categoriesModel[index],
             ),
           ),
         ),

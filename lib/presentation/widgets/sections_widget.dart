@@ -1,3 +1,4 @@
+import 'package:etoile_app/data/models/home_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -7,10 +8,10 @@ import 'custom_button.dart';
 class Sections extends StatelessWidget {
   const Sections({
     super.key,
-    required this.image,
+    required this.homeModel,
   });
 
-  final String image;
+  final HomeModel homeModel;
 
   @override
   Widget build(BuildContext context) {
@@ -32,12 +33,12 @@ class Sections extends StatelessWidget {
             borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(5), topRight: Radius.circular(5)),
             image: DecorationImage(
-                image: AssetImage(image), fit: BoxFit.fitHeight),
+                image: NetworkImage(homeModel.image ?? ''), fit: BoxFit.cover),
           ),
         ),
         Container(
           width: double.infinity,
-          padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 10.h),
+          padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 5.h),
           margin: EdgeInsets.only(bottom: 10.h, left: 10.w, right: 10.w),
           decoration: const BoxDecoration(
             color: Colors.white,
@@ -58,15 +59,15 @@ class Sections extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Expanded(
+              Expanded(
                 flex: 2,
-                child: Text('Bakery'),
+                child: Text(homeModel.description ?? ''),
               ),
               Expanded(
                 flex: 1,
                 child: CustomButton(
                     width: double.infinity,
-                    verticalPadding: 15.h,
+                    verticalPadding: 10.h,
                     text: 'Order Now',
                     buttonColor: AppColors.buttonColor),
               ),

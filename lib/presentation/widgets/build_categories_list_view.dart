@@ -1,12 +1,12 @@
+import 'package:etoile_app/data/models/home_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../constance/colors.dart';
 
 class BuildItemCategoriesListView extends StatelessWidget {
-  const BuildItemCategoriesListView({super.key, required this.categoriesName});
-
-  final String categoriesName;
+  const BuildItemCategoriesListView({super.key, required this.categoriesModel,});
+final HomeModel categoriesModel;
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +27,7 @@ class BuildItemCategoriesListView extends StatelessWidget {
             child: ClipRRect(
               borderRadius: const BorderRadius.all(Radius.circular(10)),
               child: Image.network(
-                'https://t3.ftcdn.net/jpg/00/78/46/66/240_F_78466601_5nXFPeyzmHIBahgGWDYuVbcLxIjALcQG.jpg',
+                categoriesModel.image??'',
                 height: 35.h,
                 fit: BoxFit.cover,
               ),
@@ -39,7 +39,7 @@ class BuildItemCategoriesListView extends StatelessWidget {
           Expanded(
             flex: 3,
             child: Text(
-              categoriesName,
+              categoriesModel.catName??'',
               style: const TextStyle(
                 color: Colors.white,
               ),
