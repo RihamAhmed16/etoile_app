@@ -11,9 +11,8 @@ class StoreCubit extends Cubit<StoreState> {
   StoreCubit(this.storeRepo) : super(HomeInitial());
   StoreRepo storeRepo;
   List<HomeModel> bestSeller = [];
-  List<HomeModel> sections = [];
-  List<HomeModel> firstSections = [];
-  List<HomeModel> secondSections = [];
+  List<CategoryModel> firstSections = [];
+  List<CategoryModel> secondSections = [];
   List<CategoryModel> categories = [];
   CategoryModel discount =
       CategoryModel(name: 'Discount', categoryProducts: [], id: -1);
@@ -48,6 +47,7 @@ class StoreCubit extends Cubit<StoreState> {
         for (var element in value.docs) {
           categories.add(CategoryModel.fromJson(element.data()));
         }
+        seperateCategoriesList(sections: categories);
         emit(CategoriesSuccessState());
       });
     } else {
@@ -89,42 +89,24 @@ class StoreCubit extends Cubit<StoreState> {
         emit(ProductsSortingState());
         break;
       case 'b':
-        categoryModel.categoryProducts!.sort((a, b) => b.isBestSeller ? 1 : -1);
+        categoryModel.categoryProducts!.sort((a, b) {
+          if (a.isBestSeller && !b.isBestSeller) {
+            return -1;
+          } else if (!a.isBestSeller && b.isBestSeller) {
+            return 1;
+          } else {
+            return 0;
+          }
+        });
         emit(ProductsSortingState());
         break;
     }
   }
 
-  Future<void> getSections() async {
-    emit(SectionsLoadingState());
-    if (sections.isEmpty) {
-      await FirebaseFirestore.instance
-          .collection('home')
-          .doc('main')
-          .collection('main')
-          .get()
-          .then((value) {
-        for (var element in value.docs) {
-          sections.add(HomeModel.fromJson(element.data()));
-        }
-        seperateSectionsList(sections: sections);
-        emit(SectionsSuccessState());
-      }).catchError((error) {
-        emit(SectionsFailureState(error: error.toString()));
-      });
-    } else {
-      return;
-    }
-  }
+  void seperateCategoriesList({required List<CategoryModel> sections}) {
+        firstSections= sections.sublist(0,2);
+        secondSections = sections.sublist(2,4);
 
-  void seperateSectionsList({required List<HomeModel> sections}) {
-    for (var i = 0; i < sections.length; i++) {
-      if (i < sections.length ~/ 2) {
-        firstSections.add(sections[i]);
-      } else {
-        secondSections.add(sections[i]);
-      }
-    }
   }
 
   Future<void> getAllProducts([num? categoryId]) async {

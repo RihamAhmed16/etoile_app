@@ -1,4 +1,3 @@
-import 'package:etoile_app/bussines_logic/categories_cubit/categories_cubit.dart';
 import 'package:etoile_app/bussines_logic/home_cubit/home_cubit.dart';
 import 'package:etoile_app/constance/colors.dart';
 import 'package:etoile_app/slider/slider.dart';
@@ -6,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../constance/test_list.dart';
 import '../../core/widgets/home_appbar.dart';
 import '../../data/models/home_model.dart';
 import '../widgets/best_seller_item.dart';
@@ -25,7 +25,6 @@ class _HomeState extends State<Home> {
     Future.wait([
       context.read<StoreCubit>().getBestSeller(),
       context.read<StoreCubit>().getCategories(),
-      context.read<StoreCubit>().getSections(),
     ]);
     super.initState();
   }
@@ -65,6 +64,7 @@ class _HomeState extends State<Home> {
                               homeModel: context
                                   .read<StoreCubit>()
                                   .firstSections[index],
+                              image:imagesForFirstListOfCategories[index] ,
                             ),
                             childCount:
                                 context.read<StoreCubit>().firstSections.length,
@@ -80,7 +80,9 @@ class _HomeState extends State<Home> {
                             (context, index) => Sections(
                                 homeModel: context
                                     .read<StoreCubit>()
-                                    .secondSections[index]),
+                                    .secondSections[index],
+                              image: imagesForSecondListOfCategories[index],
+                            ),
                             childCount:
                                 context.read<StoreCubit>().secondSections.length,
                           ),
