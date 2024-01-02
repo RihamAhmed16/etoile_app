@@ -1,3 +1,4 @@
+import 'package:etoile_app/bussines_logic/categories_cubit/categories_cubit.dart';
 import 'package:etoile_app/bussines_logic/home_cubit/home_cubit.dart';
 import 'package:etoile_app/constance/colors.dart';
 import 'package:etoile_app/slider/slider.dart';
@@ -22,9 +23,9 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     Future.wait([
-      context.read<HomeCubit>().getBestSeller(),
-      context.read<HomeCubit>().getCategories(),
-      context.read<HomeCubit>().getSections(),
+      context.read<StoreCubit>().getBestSeller(),
+      context.read<StoreCubit>().getCategories(),
+      context.read<StoreCubit>().getSections(),
     ]);
     super.initState();
   }
@@ -36,7 +37,7 @@ class _HomeState extends State<Home> {
         child: Column(
           children: [
             const HomeHeader(),
-            BlocBuilder<HomeCubit, HomeState>(
+            BlocBuilder<StoreCubit, StoreState>(
               builder: (context, state) {
                 if (state is BestSellerLoadingState ||
                     state is CategoriesLoadingState ||
@@ -55,33 +56,33 @@ class _HomeState extends State<Home> {
                         SliverToBoxAdapter(
                           child: CategoriesWidget(
                             categoriesModel:
-                                context.read<HomeCubit>().categories,
+                                context.read<StoreCubit>().categories,
                           ),
                         ),
                         SliverList(
                           delegate: SliverChildBuilderDelegate(
                             (context, index) => Sections(
                               homeModel: context
-                                  .read<HomeCubit>()
+                                  .read<StoreCubit>()
                                   .firstSections[index],
                             ),
                             childCount:
-                                context.read<HomeCubit>().firstSections.length,
+                                context.read<StoreCubit>().firstSections.length,
                           ),
                         ),
                         SliverToBoxAdapter(
                           child: BestSellerWidget(
-                            bestSeller: context.read<HomeCubit>().bestSeller,
+                            bestSeller: context.read<StoreCubit>().bestSeller,
                           ),
                         ),
                         SliverList(
                           delegate: SliverChildBuilderDelegate(
                             (context, index) => Sections(
                                 homeModel: context
-                                    .read<HomeCubit>()
+                                    .read<StoreCubit>()
                                     .secondSections[index]),
                             childCount:
-                                context.read<HomeCubit>().secondSections.length,
+                                context.read<StoreCubit>().secondSections.length,
                           ),
                         ),
                       ],
@@ -124,14 +125,14 @@ class BestSellerWidget extends StatelessWidget {
           ),
         ),
         SizedBox(
-          height: 300.h,
+          height: 250.h,
           child: ListView.builder(
             itemCount: bestSeller.length,
             scrollDirection: Axis.horizontal,
             itemBuilder: (context, index) => Padding(
               padding: EdgeInsets.only(left: 8.0.w),
               child: BestSellerItem(
-                bestSellerModel: context.read<HomeCubit>().bestSeller[index],
+                bestSellerModel: context.read<StoreCubit>().bestSeller[index],
               ),
             ),
           ),

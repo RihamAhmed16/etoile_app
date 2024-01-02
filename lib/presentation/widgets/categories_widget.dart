@@ -1,13 +1,15 @@
+import 'package:etoile_app/bussines_logic/home_cubit/home_cubit.dart';
 import 'package:etoile_app/constance/colors.dart';
-import 'package:etoile_app/data/models/home_model.dart';
+import 'package:etoile_app/data/models/category_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'build_categories_list_view.dart';
 
 class CategoriesWidget extends StatelessWidget {
   const CategoriesWidget({super.key, required this.categoriesModel});
-final List<HomeModel> categoriesModel;
+final List<CategoryModel> categoriesModel;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -30,11 +32,15 @@ final List<HomeModel> categoriesModel;
         SizedBox(
           height: 35.h,
           child: ListView.builder(
-            itemCount: categoriesModel.length,
+            itemCount: categoriesModel.length+1,
             scrollDirection: Axis.horizontal,
-            itemBuilder: (context, index) => BuildItemCategoriesListView(
-              categoriesModel: categoriesModel[index],
-            ),
+            itemBuilder: (context, index) {
+              return  index ==  0 ? CategoryListItem(
+                categoryModel: context.read<StoreCubit>().discount,
+              ): CategoryListItem(
+              categoryModel: categoriesModel[index-1],
+              );
+            }
           ),
         ),
       ],

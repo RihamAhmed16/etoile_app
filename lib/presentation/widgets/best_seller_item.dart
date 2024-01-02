@@ -10,8 +10,8 @@ final HomeModel bestSellerModel;
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 180.w,
-      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 20.h),
+      width: 200.w,
+      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
       decoration: const BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.all(
@@ -20,9 +20,9 @@ final HomeModel bestSellerModel;
           boxShadow: [
             BoxShadow(
                 color: Colors.black12,
-                blurRadius: 0.5,
-                spreadRadius: 0.5,
-                offset: Offset(0, 0.5),
+                blurRadius: 5.0,
+                spreadRadius: 0.9,
+                offset: Offset(2, 2),
                 blurStyle: BlurStyle.normal),
           ]),
       child: Column(
