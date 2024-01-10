@@ -1,11 +1,10 @@
 import 'package:device_preview/device_preview.dart';
 import 'package:etoile_app/app_router.dart';
-import 'package:etoile_app/bussines_logic/categories_cubit/categories_cubit.dart';
 import 'package:etoile_app/bussines_logic/home_cubit/home_cubit.dart';
 import 'package:etoile_app/constance/strings.dart';
 import 'package:etoile_app/data/repository/store_repo.dart';
 import 'package:etoile_app/helper/cach_helper.dart';
-import 'package:flutter/foundation.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,23 +17,26 @@ late String initialRoute;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await CashHelper.init();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
   Bloc.observer = MyBlocObserver();
-   await updateProductCategoryIds();
+  await updateProductCategoryIds();
   bool? onBoarding = CashHelper.getData(key: "onBoarding");
-  if (onBoarding == true) {
-    initialRoute = AppStrings.homeScreen;
-  } else {
-    initialRoute = AppStrings.onBoardingScreen;
-  }
-  runApp(DevicePreview(
-    enabled: !kReleaseMode,
-    builder: (context) =>
-        MyApp(
-          appRouter: AppRouter(),
-        ),
+  FirebaseAuth.instance.authStateChanges().listen((user) {
+    if (user == null) {
+      initialRoute = AppStrings.loginScreen;
+    } else {
+      if (onBoarding == true) {
+        initialRoute = AppStrings.homeScreen;
+      } else {
+        initialRoute = AppStrings.onBoardingScreen;
+      }
+    }
+  });
+  runApp(MyApp(
+    appRouter: AppRouter(),
   ));
 }
 

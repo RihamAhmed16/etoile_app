@@ -9,11 +9,11 @@ void showToast({
     Fluttertoast.showToast(
       msg: text,
       toastLength: Toast.LENGTH_LONG,
-      gravity: ToastGravity.BOTTOM,
+      gravity: ToastGravity.CENTER,
       timeInSecForIosWeb: 10,
       backgroundColor: chooseToastcolor(state),
       textColor: Colors.white,
-      fontSize: 20.0,
+      fontSize: 12.0,
     );
 
 //  enum>> to swap color
@@ -24,7 +24,7 @@ Color? chooseToastcolor(Toaststate state) {
   Color color;
   switch (state) {
     case Toaststate.SUCCESS:
-      color = Colors.green;
+      color = AppColors.buttonColor;
       break;
     case Toaststate.ERROR:
       color = AppColors.buttonColor;

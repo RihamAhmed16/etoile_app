@@ -25,7 +25,7 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
       key: 'onBoarding',
       value: true,
     ).then((value) {
-      if (value??true) {
+      if (value!) {
         Navigator.pushNamedAndRemoveUntil(
             context, AppStrings.homeScreen, (route) => false);
       }
@@ -94,6 +94,9 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
                     child: CustomButton(
                       text: 'Sign In',
                       width: double.infinity,
+                      onPressed: (){
+                        Navigator.pushNamed(context, AppStrings.signUpScreen);
+                      },
                       buttonColor: AppColors.buttonColor,
                       verticalPadding: 15.h,
                     ),
@@ -104,6 +107,9 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
                   Expanded(
                     child: CustomButton(
                       text: 'Sign Up',
+                      onPressed: (){
+                        Navigator.pushNamed(context, AppStrings.signUpScreen);
+                      },
                       width: double.infinity,
                       buttonColor: AppColors.lightBlack,
                       verticalPadding: 15.h,

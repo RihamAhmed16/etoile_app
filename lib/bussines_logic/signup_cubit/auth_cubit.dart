@@ -25,8 +25,8 @@ class SignUpCubit extends Cubit<AuthState> {
           .createUserWithEmailAndPassword(
         email: email,
         password: password,
-      ).then((value) {
-        emit(SuccessAuthState());
+      )
+          .then((value) {
         print(value.user!.email);
         print('cubit register : ${value.user!.uid}');
         userCreate(
@@ -78,8 +78,7 @@ class SignUpCubit extends Cubit<AuthState> {
       required String firstName,
       required String lastName}) async {
     emit(LoadingAuthState());
-    await FirebaseAuth.instance
-        .verifyPhoneNumber(
+    await FirebaseAuth.instance.verifyPhoneNumber(
       phoneNumber: '+2$phoneNumber',
       timeout: const Duration(
         seconds: 40,
@@ -88,14 +87,7 @@ class SignUpCubit extends Cubit<AuthState> {
       verificationFailed: verificationFailed,
       codeSent: codeSent,
       codeAutoRetrievalTimeout: codeAutoRetrievalTimeout,
-    ).then((value) {
-      userRegister(
-          email: email,
-          password: password,
-          firstName: firstName,
-          lastName: lastName,
-          phone: phoneNumber);
-    });
+    );
   }
 
   void verificationCompleted(PhoneAuthCredential credential) async {
@@ -122,12 +114,25 @@ class SignUpCubit extends Cubit<AuthState> {
     print('codeVerificationTimedOut');
   }
 
-  Future<void> submitOtp(String otpCode) async {
+  Future<void> submitOtp(String otpCode,
+      {required String email,
+      required String password,
+      required String firstName,
+      required String lastName,
+      required String phoneNumber}) async {
     PhoneAuthCredential credential = PhoneAuthProvider.credential(
-      verificationId: this.verificationId,
+      verificationId: verificationId,
       smsCode: otpCode,
     );
-    await signIn(credential);
+    await signIn(credential).then((value) {
+      userRegister(
+          email: email,
+          password: password,
+          firstName: firstName,
+          lastName: lastName,
+          phone: phoneNumber);
+      emit(SuccessAuthState());
+    });
   }
 
   Future<void> signIn(PhoneAuthCredential credential) async {

@@ -24,37 +24,42 @@ class _SliderPState extends State<SliderP> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      clipBehavior: Clip.none,
-      alignment: Alignment.bottomCenter,
-      children: [
-        CarouselSlider.builder(
-          carouselController: controller,
-          disableGesture: true,
-          itemCount: urlImages.length,
-          itemBuilder: (context, index, realIndex) {
-            final urlImage = urlImages[index];
-            return buildImage(urlImage, index);
-          },
-          options: CarouselOptions(
-            aspectRatio: 3.4,
-            autoPlay: true,
-            disableCenter: true,
-            animateToClosest: false,
-            enableInfiniteScroll: false,
-            autoPlayAnimationDuration: const Duration(seconds: 2),
-            onPageChanged: (index, reason) =>
-                setState(() => activeIndex = index),
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      child: Stack(
+        clipBehavior: Clip.none,
+        alignment: Alignment.bottomCenter,
+        children: [
+          CarouselSlider.builder(
+            carouselController: controller,
+            disableGesture: true,
+            itemCount: urlImages.length,
+            itemBuilder: (context, index, realIndex) {
+              final urlImage = urlImages[index];
+              return buildImage(urlImage, index,context);
+            },
+            options: CarouselOptions(
+              aspectRatio: 3.4,
+              autoPlay: true,
+              disableCenter: true,
+              animateToClosest: false,
+              enlargeCenterPage: false,
+              enlargeFactor: 0.3,
+              enableInfiniteScroll: false,
+              autoPlayAnimationDuration: const Duration(seconds: 2),
+              onPageChanged: (index, reason) =>
+                  setState(() => activeIndex = index),
+            ),
           ),
-        ),
-        Padding(
-          padding: EdgeInsets.symmetric(vertical: 2.h),
-          child: Align(
-            alignment: AlignmentDirectional.bottomCenter,
-            child: buildIndicator(),
-          ),
-        )
-      ],
+          Padding(
+            padding: EdgeInsets.symmetric(vertical: 2.h),
+            child: Align(
+              alignment: AlignmentDirectional.bottomCenter,
+              child: buildIndicator(),
+            ),
+          )
+        ],
+      ),
     );
   }
 
@@ -90,8 +95,8 @@ class _SliderPState extends State<SliderP> {
   void animateToSlide(int index) => controller.animateToPage(index);
 }
 
-Widget buildImage(String urlImage, int index) => Container(
-      width: double.infinity,
+Widget buildImage(String urlImage, int index,BuildContext context) => Container(
+      width: MediaQuery.of(context).size.width,
       margin: EdgeInsets.symmetric(horizontal: 5.w),
       decoration: BoxDecoration(
         image:

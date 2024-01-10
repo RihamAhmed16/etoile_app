@@ -3,13 +3,15 @@ class UserModel {
   late final String lastName;
   late final String emailAddress;
   late final String? mobileNumber;
-  late final String uId;
+  late final String ? uId;
+  late final String ? password;
 
   UserModel({
     required this.firstName,
-    required this.uId,
+     this.uId,
     required this.lastName,
     required this.emailAddress,
+    this.password,
     this.mobileNumber,
   });
 

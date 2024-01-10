@@ -1,11 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.etoile_app">
-    <uses-permission
-        android:name="android.permission.ACCESS_CORASE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
-    <meta-data android:name="com.google.android.geo.API_KEY"
-        android:value="AIzaSyCe-VvCRJ4QrO2OfqXAcz5-Y19_PW84L7U"/>
+    <uses-permission android:name="android.permission.INTERNET" />
     <queries>
         <!-- If your app checks for SMS support -->
         <intent>

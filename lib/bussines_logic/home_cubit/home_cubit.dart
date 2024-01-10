@@ -1,40 +1,98 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:etoile_app/data/models/cart_model.dart';
 import 'package:etoile_app/data/models/category_model.dart';
+import 'package:etoile_app/data/models/product_model.dart';
 import 'package:etoile_app/data/repository/store_repo.dart';
+import 'package:etoile_app/helper/cach_helper.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../data/models/home_model.dart';
 
 part 'home_state.dart';
 
 class StoreCubit extends Cubit<StoreState> {
   StoreCubit(this.storeRepo) : super(HomeInitial());
   StoreRepo storeRepo;
-  List<HomeModel> bestSeller = [];
+  List<Products> bestSeller = [];
   List<CategoryModel> firstSections = [];
   List<CategoryModel> secondSections = [];
   List<CategoryModel> categories = [];
+  List<CartModel> basketProducts = [];
+  List<String> productsId = [];
+  Products ? productDetails;
   CategoryModel discount =
       CategoryModel(name: 'Discount', categoryProducts: [], id: -1);
+
+  Future<void> getProductDetails({required String productId}) async {
+    emit(GetProductDetailsLoading());
+    await storeRepo.getProductDetails(productId: productId).then((value) {
+       productDetails = value;
+      emit(GetProductDetailsSuccess());
+    });
+  }
+
+  Future<void> getBasketProducts() async {
+    emit(GetBasketsLoadingState());
+    await storeRepo.getBasketProducts().then((value) {
+      basketProducts = value;
+      emit(GetBasketSuccessState());
+    }).catchError((error) {
+      print(error.toString());
+      emit(GetBasketFailureState(error: error.toString()));
+    });
+  }
+
+  Future<void> addToBasket({required CartModel cartModel}) async {
+    emit(AddToBasketLoading());
+    await storeRepo.addToBasket(cartModel: cartModel).then((value) async {
+      int cartCount = CashHelper.getData(key: 'cartCount') ?? 0;
+      CashHelper.saveData(
+          key: 'cartCount', value: cartCount + cartModel.quantity);
+      emit(AddToBasketSuccess());
+    }).catchError((error) {
+      print(error.toString());
+      emit(AddToBasketFailure(error: error.toString()));
+    });
+  }
 
   Future<void> getBestSeller() async {
     emit(BestSellerLoadingState());
     if (bestSeller.isEmpty) {
-      await FirebaseFirestore.instance
-          .collection('home')
-          .doc('bestSeller')
-          .collection('bestsller')
-          .get()
-          .then((value) {
-        for (var element in value.docs) {
-          bestSeller.add(HomeModel.fromJson(element.data()));
-        }
+      await storeRepo.getBestSellerProducts().then((value) {
+        bestSeller = value
+            .where((element) => element.isBestSeller == true)
+            .toList()
+            .sublist(0, 4);
         print(bestSeller.first.image);
         emit(BestSellerSuccessState());
       });
     } else {
       return;
     }
+  }
+
+  Future<void> updateProductQuantity(
+      {required String productId,
+      required int quantity,
+      required String price}) async {
+    final fireStore = FirebaseFirestore.instance;
+    final currentUser = FirebaseAuth.instance.currentUser!.uid;
+    double numericPrice = double.parse(price);
+    int cartCount = CashHelper.getData(key: 'cartCount') ?? 0;
+    emit(AddToBasketLoading());
+    await fireStore
+        .collection('users')
+        .doc(currentUser)
+        .collection('cart')
+        .doc(productId)
+        .update({
+      'quantity': FieldValue.increment(quantity),
+      'price': FieldValue.increment(numericPrice),
+    }).then((value) {
+      CashHelper.saveData(key: 'cartCount', value: cartCount + quantity);
+      emit(AddToBasketSuccess());
+    }).catchError((error) {
+      emit(AddToBasketFailure(error: error.toString()));
+    });
   }
 
   Future<void> getCategories() async {
@@ -104,12 +162,11 @@ class StoreCubit extends Cubit<StoreState> {
   }
 
   void seperateCategoriesList({required List<CategoryModel> sections}) {
-        firstSections= sections.sublist(0,2);
-        secondSections = sections.sublist(2,4);
-
+    firstSections = sections.sublist(0, 2);
+    secondSections = sections.sublist(2, 4);
   }
 
-  Future<void> getAllProducts([num? categoryId]) async {
+  Future<void> getCategoriesAndDiscountProducts([num? categoryId]) async {
     if (categories
         .firstWhere((element) => element.id.toString() == categoryId.toString(),
             orElse: () => discount)
