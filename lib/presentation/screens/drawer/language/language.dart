@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class Language extends StatelessWidget {
-  const Language({Key? key}) : super(key: key);
+  const Language({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -10,17 +10,17 @@ class Language extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
+            const Icon(
               Icons.language_sharp,
               color: Colors.orangeAccent,
               size: 80,
             ),
-            SizedBox(height: 30),
+            const SizedBox(height: 30),
             buildLangButton(
               "English",
               Colors.orangeAccent,
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             buildLangButton(
               "Arabic",
               Colors.black,
@@ -36,13 +36,13 @@ class Language extends StatelessWidget {
       borderRadius: BorderRadius.circular(30),
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-          primary: color,
-          padding: EdgeInsets.symmetric(horizontal: 60, vertical: 15),
+          backgroundColor: color,
+          padding: const EdgeInsets.symmetric(horizontal: 60, vertical: 15),
         ),
         onPressed: () {},
         child: Text(
           text,
-          style: TextStyle(fontSize: 18, color: Colors.white),
+          style: const TextStyle(fontSize: 18, color: Colors.white),
         ),
       ),
     );
