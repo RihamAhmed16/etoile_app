@@ -16,7 +16,7 @@ class UserModel {
   });
 
   UserModel.fromJson(Map<String, dynamic> json) {
-    emailAddress = json['email'];
+    emailAddress = json['emailAddress'];
     mobileNumber = json['mobileNumber'] ?? '';
     firstName = json['firstName'];
     lastName = json['lastName'];

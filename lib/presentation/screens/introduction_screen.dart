@@ -27,7 +27,7 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
     ).then((value) {
       if (value!) {
         Navigator.pushNamedAndRemoveUntil(
-            context, AppStrings.homeScreen, (route) => false);
+            context, Routes.homeScreen, (route) => false);
       }
     });
   }
@@ -95,7 +95,7 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
                       text: 'Sign In',
                       width: double.infinity,
                       onPressed: (){
-                        Navigator.pushNamed(context, AppStrings.signUpScreen);
+                        Navigator.pushNamed(context, Routes.signUpScreen);
                       },
                       buttonColor: AppColors.buttonColor,
                       verticalPadding: 15.h,
@@ -108,7 +108,7 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
                     child: CustomButton(
                       text: 'Sign Up',
                       onPressed: (){
-                        Navigator.pushNamed(context, AppStrings.signUpScreen);
+                        Navigator.pushNamed(context, Routes.signUpScreen);
                       },
                       width: double.infinity,
                       buttonColor: AppColors.lightBlack,

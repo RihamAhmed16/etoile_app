@@ -1,47 +1,94 @@
+import 'package:etoile_app/bussines_logic/home_cubit/home_cubit.dart';
+import 'package:etoile_app/constance/colors.dart';
+import 'package:etoile_app/constance/strings.dart';
+import 'package:etoile_app/data/models/category_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class Categories extends StatelessWidget {
-  const Categories({super.key});
+class DrawerCategories extends StatelessWidget {
+  const DrawerCategories({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Padding(
-      padding: const EdgeInsets.only(top: 22),
-      child: GridView.builder(
+      backgroundColor: const Color.fromARGB(255, 250, 250, 250),
+      appBar: AppBar(
+        title: const Text(
+          'Categories',
+          style: TextStyle(color: Colors.black87),
+        ),
+      ),
+      body: GridView.builder(
+        itemCount: context.read<StoreCubit>().categories.length,
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            childAspectRatio: 3 / 2,
-            crossAxisSpacing: 10,
-            mainAxisSpacing: 33),
-        itemCount: 4,
-        itemBuilder: (BuildContext context, int index) {
-          return GestureDetector(
-            onTap: () {},
-            child: GridTile(
-              footer: GridTileBar(
-// backgroundColor: Color.fromARGB(66, 73, 127, 110),
-                trailing: IconButton(
-                  icon: const Icon(Icons.add_to_drive),
-                  color: const Color.fromARGB(255, 62, 94, 70),
-                  onPressed: () {},
-                ),
-              ),
-              child: Stack(children: [
-                Positioned(
-                  top: -3,
-                  bottom: -9,
-                  right: 0,
-                  left: 0,
-                  child: ClipRRect(
-                      borderRadius: BorderRadius.circular(55),
-                      child: Image.asset(" ")),
-                ),
-              ]),
-            ),
+          crossAxisCount: 2,
+        ),
+        itemBuilder: (context, index) {
+          return DrawerCategoryItem(
+            categoryModel: context.read<StoreCubit>().categories[index],
           );
         },
       ),
-    ));
+    );
+  }
+}
+
+class DrawerCategoryItem extends StatelessWidget {
+  const DrawerCategoryItem({
+    super.key,
+    required this.categoryModel,
+  });
+
+  final CategoryModel categoryModel;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () {
+        Navigator.pushNamed(context, Routes.categoriesScreen,
+            arguments: categoryModel);
+      },
+      child: Container(
+        margin:
+            EdgeInsets.only(top: 10.h, right: 12.w, left: 12.w, bottom: 10.h),
+        padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 10.w),
+        decoration: BoxDecoration(
+          boxShadow: const [
+            BoxShadow(
+                color: Colors.white,
+                blurRadius: 2.0,
+                spreadRadius: 1.9,
+                offset: Offset(.9, 2),
+                blurStyle: BlurStyle.normal),
+          ],
+          shape: BoxShape.rectangle,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(
+            color: AppColors.buttonColor,
+          ),
+        ),
+        child: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Center(
+                child: CircleAvatar(
+                  backgroundColor: Colors.transparent,
+                  radius: 35,
+                  backgroundImage: NetworkImage(
+                    categoryModel.image!,
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 9.h,
+              ),
+              Text(categoryModel.name),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

@@ -1,7 +1,6 @@
 import 'package:etoile_app/bussines_logic/home_cubit/home_cubit.dart';
 import 'package:etoile_app/constance/colors.dart';
 import 'package:etoile_app/data/models/product_model.dart';
-import 'package:etoile_app/helper/cach_helper.dart';
 import 'package:etoile_app/slider/slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -28,11 +27,7 @@ class _HomeState extends State<Home> {
       context.read<StoreCubit>().getBestSeller(),
       context.read<StoreCubit>().getCategories(),
       context.read<StoreCubit>().getBasketProducts(),
-    ]).then((value) {
-        if(context.read<StoreCubit>().basketProducts.isEmpty){
-          CashHelper.deleteData(key:'cartCount');
-        }
-      });
+    ]);
     super.initState();
   }
 

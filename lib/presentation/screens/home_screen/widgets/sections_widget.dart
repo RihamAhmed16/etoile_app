@@ -20,7 +20,7 @@ class Sections extends StatelessWidget {
       children: [
         InkWell(
           onTap: (){
-            Navigator.pushNamed(context, AppStrings.categoriesScreen,arguments: homeModel);
+            Navigator.pushNamed(context, Routes.categoriesScreen,arguments: homeModel);
           },
           child: Container(
             margin: EdgeInsets.only(top: 10.h, left: 10.w, right: 10.w),

@@ -1,12 +1,14 @@
 import 'package:etoile_app/bussines_logic/home_cubit/home_cubit.dart';
+import 'package:etoile_app/constance/strings.dart';
+import 'package:etoile_app/helper/cach_helper.dart';
 import 'package:etoile_app/presentation/screens/drawer/basket/widgets/basket_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../constance/colors.dart';
+import '../../../../core/helper/methods/toast_message.dart';
 import '../../../widgets/custom_button.dart';
-
 
 class MyBasket extends StatefulWidget {
   const MyBasket({super.key});
@@ -53,11 +55,11 @@ class _MyBasketState extends State<MyBasket> {
                 ),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 8.0.w),
-                  child: const Row(
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('Item(s) Price :'),
-                      Text('2015 EGP'),
+                      const Text('Item(s) Price :'),
+                      Text('${context.read<StoreCubit>().totalPrice}'),
                     ],
                   ),
                 ),
@@ -66,11 +68,11 @@ class _MyBasketState extends State<MyBasket> {
                 ),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 8.0.w),
-                  child: const Row(
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('Total :'),
-                      Text('2015 EGP'),
+                      const Text('Total :'),
+                      Text('${context.read<StoreCubit>().totalPrice} EGP'),
                     ],
                   ),
                 ),
@@ -79,6 +81,19 @@ class _MyBasketState extends State<MyBasket> {
                 ),
                 CustomButton(
                     text: 'Checkout',
+                    onPressed: () {
+                      if (context.read<StoreCubit>().basketProducts.isEmpty) {
+                        showToast(
+                            text: 'You Basket is Empty 😅 Add some Products 🥰',
+                            state: Toaststate.SUCCESS);
+                      } else {
+                        if (CashHelper.getData(key: 'isMakedAddress') == true) {
+                          Navigator.pushNamed(context, Routes.checkOut);
+                        } else {
+                          Navigator.pushNamed(context, Routes.address);
+                        }
+                      }
+                    },
                     width: double.infinity,
                     buttonColor: AppColors.buttonColor),
               ],

@@ -12,7 +12,7 @@ class TextFormWidget extends StatelessWidget {
     this.onSaved,
     this.suffixPress,
     this.suffixIcon,
-    this.isObscuredText,
+    this.isObscuredText, this.hintColor, this.isFromAddressFrom = false,
   });
 
   final Widget? suffixIcon;
@@ -23,7 +23,8 @@ class TextFormWidget extends StatelessWidget {
   final TextInputType? keyboardType;
   final void Function(String?)? onSaved;
   final Function()? suffixPress;
-
+  final bool ? isFromAddressFrom;
+final Color? hintColor;
   @override
   Widget build(BuildContext context) {
     return TextFormField(
@@ -34,38 +35,38 @@ class TextFormWidget extends StatelessWidget {
       validator: validator,
       decoration: InputDecoration(
         suffixIcon: suffixIcon,
-        enabledBorder: OutlineInputBorder(
+        enabledBorder: isFromAddressFrom == false ? OutlineInputBorder(
           borderSide: BorderSide(
             color: Colors.grey.withOpacity(.4),
             style: BorderStyle.solid,
           ),
           borderRadius: const BorderRadius.all(Radius.circular(7)),
-        ),
+        ):InputBorder.none,
         contentPadding: const EdgeInsets.symmetric(horizontal: 10),
-        disabledBorder: OutlineInputBorder(
+        disabledBorder:  isFromAddressFrom == false ? OutlineInputBorder(
           borderSide: BorderSide(
             color: Colors.grey.withOpacity(.4),
             style: BorderStyle.solid,
           ),
           borderRadius: const BorderRadius.all(Radius.circular(7)),
-        ),
-        focusedBorder: OutlineInputBorder(
+        ):InputBorder.none,
+        focusedBorder: isFromAddressFrom == false ? OutlineInputBorder(
           borderSide: BorderSide(
             color: Colors.grey.withOpacity(.4),
             style: BorderStyle.solid,
           ),
           borderRadius: const BorderRadius.all(Radius.circular(7)),
-        ),
-        border: OutlineInputBorder(
+        ):InputBorder.none,
+        border: isFromAddressFrom == false ? OutlineInputBorder(
           borderSide: BorderSide(
             color: Colors.grey.withOpacity(.4),
             style: BorderStyle.solid,
           ),
           borderRadius: const BorderRadius.all(Radius.circular(7)),
-        ),
+        ):InputBorder.none,
         hintText: hintText,
         hintStyle: TextStyle(
-          color: Colors.grey.withOpacity(.5),
+          color:hintColor ??Colors.grey.withOpacity(.5),
         ),
       ),
       maxLines: 1,

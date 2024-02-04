@@ -2,26 +2,38 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:etoile_app/data/models/cart_model.dart';
 import 'package:etoile_app/data/models/category_model.dart';
 import 'package:etoile_app/data/models/product_model.dart';
+import 'package:etoile_app/data/models/user_model.dart';
 import 'package:etoile_app/data/repository/store_repo.dart';
 import 'package:etoile_app/helper/cach_helper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../data/models/address_model.dart';
 part 'home_state.dart';
 
 class StoreCubit extends Cubit<StoreState> {
   StoreCubit(this.storeRepo) : super(HomeInitial());
   StoreRepo storeRepo;
+  UserModel ? userModel;
+  double totalPrice = 0;
   List<Products> bestSeller = [];
   List<CategoryModel> firstSections = [];
   List<CategoryModel> secondSections = [];
   List<CategoryModel> categories = [];
   List<CartModel> basketProducts = [];
   List<String> productsId = [];
+  List<AddressModel> address = [];
   Products ? productDetails;
   CategoryModel discount =
       CategoryModel(name: 'Discount', categoryProducts: [], id: -1);
 
+  Future<void> getAddress() async {
+    storeRepo.getAddress().then((value) {
+      address = value;
+    }).catchError((error) {
+      print(error.toString());
+    });
+  }
   Future<void> getProductDetails({required String productId}) async {
     emit(GetProductDetailsLoading());
     await storeRepo.getProductDetails(productId: productId).then((value) {
@@ -34,10 +46,23 @@ class StoreCubit extends Cubit<StoreState> {
     emit(GetBasketsLoadingState());
     await storeRepo.getBasketProducts().then((value) {
       basketProducts = value;
+      totalPrice = value.fold(
+          0.0, (double accumulator, element) => accumulator + element.price);
       emit(GetBasketSuccessState());
     }).catchError((error) {
       print(error.toString());
       emit(GetBasketFailureState(error: error.toString()));
+    });
+  }
+
+  Future<void> removeFromBasket ({required CartModel cartModel}) async {
+    emit(RemoveFromBasketLoading());
+    await storeRepo.deleteFromBasket(cartModel: cartModel).then((value) {
+      int cartCount = CashHelper.getData(key: 'cartCount');
+      CashHelper.saveData(key: 'cartCount', value:cartCount-(1*cartModel.quantity));
+      emit(RemoveFromBasketSuccess());
+    }).catchError((error){
+      emit(RemoveFromBasketFailure(error: error.toString()));
     });
   }
 
@@ -78,6 +103,7 @@ class StoreCubit extends Cubit<StoreState> {
     final currentUser = FirebaseAuth.instance.currentUser!.uid;
     double numericPrice = double.parse(price);
     int cartCount = CashHelper.getData(key: 'cartCount') ?? 0;
+    print(currentUser.toString());
     emit(AddToBasketLoading());
     await fireStore
         .collection('users')
@@ -90,8 +116,6 @@ class StoreCubit extends Cubit<StoreState> {
     }).then((value) {
       CashHelper.saveData(key: 'cartCount', value: cartCount + quantity);
       emit(AddToBasketSuccess());
-    }).catchError((error) {
-      emit(AddToBasketFailure(error: error.toString()));
     });
   }
 

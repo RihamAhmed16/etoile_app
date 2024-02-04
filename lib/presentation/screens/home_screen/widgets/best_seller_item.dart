@@ -33,7 +33,7 @@ final Products bestSellerModel;
             flex: 3,
             child: InkWell(
               onTap: (){
-                Navigator.pushNamed(context, AppStrings.productDetailsScreen,arguments: bestSellerModel.productId);
+                Navigator.pushNamed(context, Routes.productDetailsScreen,arguments: bestSellerModel.productId);
               },
               child: Container(
                 decoration: const BoxDecoration(),

@@ -1,10 +1,10 @@
-import 'package:etoile_app/bussines_logic/login_cubit/log_in_cubit.dart';
 import 'package:etoile_app/constance/strings.dart';
-import 'package:etoile_app/helper/methods/toast_message.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../bussines_logic/auth_cubit/auth_cubit.dart';
 import '../../../constance/colors.dart';
+import '../../../core/helper/methods/toast_message.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/text_form_widget.dart';
 
@@ -43,14 +43,14 @@ class _LoginState extends State<Login> {
         appBar: AppBar(),
         body: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
-          child: BlocConsumer<LogInCubit, LogInState>(
+          child: BlocConsumer<AuthCubit, AuthState>(
             listener: (context, state) {
               if (state is ErrorLogIn) {
                 showToast(text: state.errorMessage, state: Toaststate.ERROR);
               }
               if (state is SuccessLogIn) {
                 Navigator.pushNamedAndRemoveUntil(
-                    context, AppStrings.homeScreen, (route) => false);
+                    context, Routes.homeScreen, (route) => false);
               }
             },
             builder: (context, state) {
@@ -65,7 +65,7 @@ class _LoginState extends State<Login> {
                         height: MediaQuery.of(context).size.height * .050,
                       ),
                       Image.asset(
-                        AppStrings.splashImage2,
+                        Routes.splashImage2,
                         height: 150,
                         width: 150,
                       ),
@@ -117,7 +117,7 @@ class _LoginState extends State<Login> {
                         height: MediaQuery.of(context).size.height * .03,
                       ),
                       CustomButton(
-                        width:double.infinity,
+                        width: double.infinity,
                         buttonColor: AppColors.buttonColor,
                         text: 'LOG IN',
                         onPressed: () {
@@ -125,7 +125,7 @@ class _LoginState extends State<Login> {
                             return;
                           } else {
                             formKey.currentState!.save();
-                            LogInCubit.get(context).userLogin(
+                            AuthCubit.get(context).userLogin(
                                 email: emailController.text,
                                 password: passwordController.text);
                           }
@@ -144,7 +144,7 @@ class _LoginState extends State<Login> {
                           GestureDetector(
                             onTap: () {
                               Navigator.pushNamed(
-                                  context, AppStrings.signUpScreen);
+                                  context, Routes.signUpScreen);
                             },
                             child: const Text(
                               'SIGN UP',

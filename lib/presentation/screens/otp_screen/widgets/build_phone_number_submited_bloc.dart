@@ -2,16 +2,16 @@ import 'package:etoile_app/presentation/screens/sing_up_screen/signup_body_view.
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../bussines_logic/signup_cubit/auth_cubit.dart';
+import '../../../../bussines_logic/auth_cubit/auth_cubit.dart';
 import '../../../../constance/strings.dart';
-import '../../../../helper/methods/show_progress_indicator.dart';
+import '../../../../core/helper/methods/show_progress_indicator.dart';
 
 class BuildPhoneNumberSubmitedBloc extends StatelessWidget {
   const BuildPhoneNumberSubmitedBloc({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<SignUpCubit, AuthState>(
+    return BlocListener<AuthCubit, AuthState>(
       listenWhen: (previous, current) {
         return previous != current;
       },
@@ -21,7 +21,7 @@ class BuildPhoneNumberSubmitedBloc extends StatelessWidget {
         }
         if (state is PhoneSubmittedAuthState) {
           Navigator.pop(context);
-          Navigator.pushNamed(context, AppStrings.otpScreen,
+          Navigator.pushNamed(context, Routes.otpScreen,
               arguments: mobileNumberController.text);
         }
         if (state is ErrorOccurred) {

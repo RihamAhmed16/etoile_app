@@ -1,10 +1,10 @@
 import 'package:etoile_app/constance/strings.dart';
 import 'package:etoile_app/data/models/product_model.dart';
-import 'package:etoile_app/helper/methods/add_product_to_basket.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../constance/colors.dart';
+import '../../../../core/helper/methods/add_product_to_basket.dart';
 
 class ProductItemForListView extends StatelessWidget {
   const ProductItemForListView({super.key, required this.product});
@@ -17,7 +17,7 @@ class ProductItemForListView extends StatelessWidget {
     double price = 0;
     return InkWell(
       onTap: () {
-        Navigator.pushNamed(context, AppStrings.productDetailsScreen,
+        Navigator.pushNamed(context, Routes.productDetailsScreen,
             arguments: product.productId);
       },
       child: Card(

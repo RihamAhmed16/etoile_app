@@ -4,8 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../bussines_logic/home_cubit/home_cubit.dart';
 import '../../../../constance/colors.dart';
+import '../../../../core/helper/methods/toast_message.dart';
 import '../../../../data/models/category_model.dart';
-import '../../../../helper/methods/toast_message.dart';
 import 'listview_category_products_builder.dart';
 
 class CategoriesScreenBodyContent extends StatelessWidget {

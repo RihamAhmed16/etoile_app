@@ -19,7 +19,7 @@ class CategoryListItem extends StatelessWidget {
       onTap: () {
         Navigator.pushNamed(
           context,
-          AppStrings.categoriesScreen,
+          Routes.categoriesScreen,
           arguments: categoryModel,
         );
       },

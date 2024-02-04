@@ -13,7 +13,12 @@ class CategoriesFailureState extends StoreState {
 
   CategoriesFailureState({required this.error});
 }
-
+class RemoveFromBasketLoading extends StoreState {}
+class RemoveFromBasketSuccess extends StoreState {}
+class RemoveFromBasketFailure extends StoreState {
+  final String error;
+  RemoveFromBasketFailure({required this.error});
+}
 class GetProductDetailsLoading extends StoreState {}
 
 class GetProductDetailsSuccess extends StoreState {

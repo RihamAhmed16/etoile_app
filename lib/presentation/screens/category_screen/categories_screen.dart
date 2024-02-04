@@ -1,4 +1,5 @@
 import 'package:etoile_app/bussines_logic/home_cubit/home_cubit.dart';
+import 'package:etoile_app/constance/colors.dart';
 import 'package:etoile_app/data/models/category_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -24,7 +25,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
   @override
   Widget build(BuildContext context) {
     return  Scaffold(
-      backgroundColor:const Color.fromARGB(255, 250, 250, 250),
+      backgroundColor:AppColors.backgroundColor,
       body: SafeArea(
         child: CategoriesScreenBody(
           categoryModel: widget.categoryModel,

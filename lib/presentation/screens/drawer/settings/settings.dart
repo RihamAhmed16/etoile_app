@@ -2,19 +2,19 @@ import 'package:flutter/material.dart';
 
 class Settings extends StatelessWidget {
 
-  const Settings({Key? key}) : super(key: key);
+  const Settings({super.key});
 
   @override
   Widget build(BuildContext context) {
     return  Scaffold(
       appBar: AppBar(
-        title: Text('Settings'),
+        title: const Text('Settings'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: ListView(
           children: [
-            ListTile(
+            const ListTile(
               title: Text(
                 'Account',
                 style: TextStyle(
@@ -27,7 +27,7 @@ class Settings extends StatelessWidget {
             buildSettingCard(Icons.arrow_forward, 'Change Password'),
             buildSettingCard(Icons.arrow_forward, 'Delete account'),
             buildSettingCard(Icons.arrow_forward, 'Deactivate account'),
-            ListTile(
+            const ListTile(
               title: Text(
                 'Notifications',
                 style: TextStyle(
@@ -37,7 +37,7 @@ class Settings extends StatelessWidget {
               ),
             ),
             buildNotificationCard(),
-            ListTile(
+            const ListTile(
               title: Text(
                 'Others',
                 style: TextStyle(
@@ -47,7 +47,7 @@ class Settings extends StatelessWidget {
               ),
             ),
             buildSettingCard(Icons.star, 'Rate the App'),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
           ],
         ),
       ),
@@ -58,7 +58,7 @@ class Settings extends StatelessWidget {
     return ListTile(
       leading: Icon(icon),
       title: Text(text),
-      trailing: Icon(Icons.arrow_forward),
+      trailing: const Icon(Icons.arrow_forward),
     );
   }
 
@@ -66,8 +66,8 @@ class Settings extends StatelessWidget {
     bool isNotificationOn = true;
 
     return ListTile(
-      leading: Icon(Icons.notifications),
-      title: Text('Notifications'),
+      leading: const Icon(Icons.notifications),
+      title: const Text('Notifications'),
       trailing: Switch(
         value: isNotificationOn,
         onChanged: (value) {

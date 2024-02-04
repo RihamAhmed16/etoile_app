@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 class Policy extends StatelessWidget {
 
-  const Policy({Key? key}) : super(key: key);
+  const Policy({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return const Scaffold();
   }
 }

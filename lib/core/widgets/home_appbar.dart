@@ -10,7 +10,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 class HomeHeader extends StatelessWidget {
   const HomeHeader({super.key, required this.isHome});
-final bool isHome;
+
+  final bool isHome;
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -52,14 +54,15 @@ final bool isHome;
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 InkWell(
-                    onTap: () {
-                      if (isHome) {
-                        Scaffold.of(context).openDrawer();
-                      } else {
-                        Navigator.pop(context);
-                      }
-                    },
-                    child: Icon(isHome? Icons.menu:Icons.arrow_back),),
+                  onTap: () {
+                    if (isHome) {
+                      Scaffold.of(context).openDrawer();
+                    } else {
+                      Navigator.pop(context);
+                    }
+                  },
+                  child: Icon(isHome ? Icons.menu : Icons.arrow_back),
+                ),
                 SizedBox(
                   width: 8.w,
                 ),
@@ -103,40 +106,50 @@ final bool isHome;
                     if (state is AddToBasketSuccess) {
                       CashHelper.getData(key: 'cartCount');
                     }
+                    if (context.read<StoreCubit>().basketProducts.isEmpty) {
+                      CashHelper.deleteData(key: 'cartCount');
+                    }
                   },
                   builder: (context, state) {
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 4),
-                      child: badges.Badge(
-                        position:
-                            badges.BadgePosition.topEnd(top: -10, end: -12),
-                        showBadge: true,
-                        ignorePointer: false,
-                        onTap: () {
-                          Navigator.pushNamed(context,AppStrings.myBasket);
-                        },
-                        badgeContent: Text(
-                          CashHelper.getData(key: 'cartCount') == null
-                              ? '0'
-                              : CashHelper.getData(key: 'cartCount').toString(),
-                          style: const TextStyle(
-                              color: Colors.white, fontSize: 12),
-                        ),
-                        badgeStyle: badges.BadgeStyle(
-                          badgeColor: AppColors.lightBlack,
-                        ),
-                        badgeAnimation: const badges.BadgeAnimation.rotation(
-                          animationDuration: Duration(seconds: 1),
-                          colorChangeAnimationDuration: Duration(seconds: 1),
-                          loopAnimation: false,
-                          curve: Curves.fastOutSlowIn,
-                          colorChangeAnimationCurve: Curves.easeInCubic,
-                        ),
-                        child: SvgPicture.asset(
-                          'assets/icons/basket-shopping-solid.svg',
-                          height: 20,
-                          width: 20,
-                          color: AppColors.buttonColor,
+                    return InkWell(
+                      onTap: (){
+                        Navigator.pushNamed(context, Routes.myBasket);
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: 4),
+                        child: badges.Badge(
+                          position:
+                              badges.BadgePosition.topEnd(top: -10, end: -12),
+                          showBadge: true,
+                          ignorePointer: false,
+                          badgeContent: Text(
+                            context
+                                .read<StoreCubit>()
+                                .basketProducts
+                                .fold(
+                                    0,
+                                    (int accumulator, element) =>
+                                        accumulator + element.quantity)
+                                .toString(),
+                            style: const TextStyle(
+                                color: Colors.white, fontSize: 12),
+                          ),
+                          badgeStyle: badges.BadgeStyle(
+                            badgeColor: AppColors.lightBlack,
+                          ),
+                          badgeAnimation: const badges.BadgeAnimation.rotation(
+                            animationDuration: Duration(seconds: 1),
+                            colorChangeAnimationDuration: Duration(seconds: 1),
+                            loopAnimation: false,
+                            curve: Curves.fastOutSlowIn,
+                            colorChangeAnimationCurve: Curves.easeInCubic,
+                          ),
+                          child: SvgPicture.asset(
+                            'assets/icons/basket-shopping-solid.svg',
+                            height: 20,
+                            width: 20,
+                            color: AppColors.buttonColor,
+                          ),
                         ),
                       ),
                     );

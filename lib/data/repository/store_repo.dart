@@ -1,6 +1,7 @@
-import 'package:etoile_app/data/api_call.dart';
+import 'package:etoile_app/data/store_api_call.dart';
 import 'package:etoile_app/data/models/cart_model.dart';
 
+import '../models/address_model.dart';
 import '../models/product_model.dart';
 
 class StoreRepo {
@@ -19,7 +20,12 @@ class StoreRepo {
         .map((element) => Products.fromJson(element.data()))
         .toList();
   }
-
+  Future<List<AddressModel>> getAddress() async {
+    final response = await apiCall.getAddress();
+    return response.docs
+        .map((address) => AddressModel.fromJson(address.data()))
+        .toList();
+  }
   Future<List<CartModel>> getBasketProducts() async {
     final response = await apiCall.getBasketProducts();
     return response.docs
@@ -37,6 +43,11 @@ class StoreRepo {
   Future<void> addToBasket ({required CartModel cartModel}) async {
     await apiCall.addToBasket(cartModel: cartModel);
   }
+
+  Future<void> deleteFromBasket ({required CartModel cartModel}) async {
+    await apiCall.deleteFromBasket(cartModel: cartModel);
+}
+
   Future<Products> getProductDetails  ({required String productId}) async {
   final response  = await apiCall.getProductDetails(productId: productId);
 

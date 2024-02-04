@@ -18,4 +18,13 @@ class CartModel {
     productId = json['product_id'];
     name = json['name'];
   }
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['image'] = image;
+    data['quantity'] = quantity;
+    data['price'] = price;
+    data['product_id'] = productId;
+    data['name'] = name;
+    return data;
+  }
 }

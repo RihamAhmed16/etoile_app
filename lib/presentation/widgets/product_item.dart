@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../constance/colors.dart';
 import '../../constance/strings.dart';
+import '../../core/helper/methods/add_product_to_basket.dart';
 import '../../data/models/product_model.dart';
-import '../../helper/methods/add_product_to_basket.dart';
 
 class ProductItem extends StatelessWidget {
   const ProductItem({
@@ -71,7 +71,7 @@ class ProductItem extends StatelessWidget {
                       onTap: (){
                         Navigator.pushNamed(
                           context,
-                          AppStrings.productDetailsScreen,
+                          Routes.productDetailsScreen,
                           arguments: product.productId,
                         );
                       },

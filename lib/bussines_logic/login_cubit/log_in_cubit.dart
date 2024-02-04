@@ -42,11 +42,4 @@ class LogInCubit extends Cubit<LogInState> {
     }
   }
 
-  // IconData suffix = Icons.visibility_outlined;
-  bool isPassword = true;
-
-  void ChangePasswordVisability() {
-    isPassword = !isPassword;
-    emit(ChangePasswordVisabilityState());
-  }
 }

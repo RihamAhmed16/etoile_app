@@ -1,7 +1,47 @@
+import 'package:etoile_app/presentation/screens/drawer/profile/widgets/profile_container.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class Profile extends StatelessWidget {
+import '../../../../bussines_logic/auth_cubit/auth_cubit.dart';
+import '../../../../constance/colors.dart';
+import '../../../widgets/custom_button.dart';
+import '../../../widgets/text_form_widget.dart';
+
+class Profile extends StatefulWidget {
   const Profile({super.key});
+
+  @override
+  State<Profile> createState() => _ProfileState();
+}
+
+late TextEditingController firstNameController;
+late TextEditingController lastNameController;
+late TextEditingController emailController;
+late TextEditingController mobileNumberController;
+late TextEditingController passwordController;
+
+class _ProfileState extends State<Profile> {
+  @override
+  void initState() {
+    firstNameController = TextEditingController();
+    lastNameController = TextEditingController();
+    emailController = TextEditingController();
+    mobileNumberController = TextEditingController();
+    passwordController = TextEditingController();
+    context.read<AuthCubit>().getCurrentUserInformation();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    firstNameController.dispose();
+    lastNameController.dispose();
+    mobileNumberController.dispose();
+    passwordController.dispose();
+    emailController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -9,223 +49,144 @@ class Profile extends StatelessWidget {
       appBar: AppBar(
         title: const Text("Profile"),
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(50),
-                child: Image.asset(" "),
-              ),
-              const SizedBox(height: 20),
-              const Text(
-                "name",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-              ),
-              const SizedBox(height: 10),
-              const Text("Email"),
-              const SizedBox(height: 30),
-              Card(
-                elevation: 5,
-                child: Padding(
-                  padding: const EdgeInsets.all(15),
-                  child: Column(
-                    children: [
-                      const TextField(
-                        decoration: InputDecoration(labelText: "First Name"),
-                      ),
-                      const SizedBox(height: 10),
-                      const TextField(
-                        decoration: InputDecoration(labelText: "Last Name"),
-                      ),
-                      const SizedBox(height: 10),
-                      const TextField(
-                        decoration: InputDecoration(labelText: "Email"),
-                      ),
-                      const SizedBox(height: 10),
-                      const TextField(
-                        decoration: InputDecoration(labelText: "Phone"),
-                      ),
-                      const SizedBox(height: 10),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: DropdownButtonFormField(
-                              items: const [
-                                DropdownMenuItem(
-                                  value: 1,
-                                  child: Text("1"),
-                                ),
-                                DropdownMenuItem(
-                                  value: 2,
-                                  child: Text("2"),
-                                ),
-                                //etc
-                              ], onChanged: (int? value) {  },
-                            ),
-                          ),
-                          const SizedBox(width: 20),
-                          Expanded(
-                            child: DropdownButtonFormField(
-                              items: const [
-                                DropdownMenuItem(
-                                  value: 1,
-                                  child: Text("Jan"),
-                                ),
-                                //etc months
-                              ], onChanged: (int? value) {  },
-                            ),
+      body: BlocBuilder<AuthCubit, AuthState>(
+        builder: (context, state) {
+          final userModel = context.read<AuthCubit>().userModel;
+          if (state is GetCurrentUserInformationSuccess && userModel != null) {
+            return SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: Column(
+                  children: [
+                    const ProfileContainer(),
+                    SizedBox(height: 10.h),
+                    Text(
+                      "${userModel.firstName}${userModel.lastName}",
+                      style: TextStyle(
+                          fontWeight: FontWeight.w500, fontSize: 14.sp),
+                    ),
+                    const SizedBox(height: 5),
+                    Text(
+                      userModel.emailAddress,
+                      style: TextStyle(fontSize: 12.sp, color: Colors.grey),
+                    ),
+                    SizedBox(height: 20.h),
+                    Container(
+                      width: double.infinity,
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 10.w, vertical: 10.h),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.5),
+                            spreadRadius: 2,
+                            blurRadius: 5,
+                            offset: const Offset(0,
+                                3), // Shadow position (left/right, top/bottom)
                           ),
                         ],
-                      )
-                    ],
-                  ),
+                      ),
+                      child: Column(
+                        children: [
+                          // First row: First Name and Last Name
+                          Row(
+                            children: [
+                              Expanded(
+                                child: TextFormWidget(
+                                  hintColor: Colors.black,
+                                  hintText: userModel.firstName,
+                                  controller: firstNameController,
+                                  validator: (value) {
+                                    if (value!.isEmpty) {
+                                      return 'Please enter the firstName';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                              ),
+                              SizedBox(
+                                width: MediaQuery.of(context).size.width * .03,
+                              ),
+                              Expanded(
+                                child: TextFormWidget(
+                                  hintText: userModel.lastName,
+                                  controller: lastNameController,
+                                  hintColor: Colors.black,
+                                  validator: (value) {
+                                    if (value!.isEmpty) {
+                                      return 'Please enter the lastName';
+                                    } else {
+                                      return null;
+                                    }
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * .02,
+                          ),
+                          TextFormWidget(
+                            controller: emailController,
+                            hintText: userModel.emailAddress,
+                            hintColor: Colors.black,
+                            validator: (value) {
+                              final emailRegex = RegExp(
+                                  r'^[\w-]+(\.[\w-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*(\.[a-zA-Z]{2,})$');
+                              if (value!.isEmpty) {
+                                return 'Please enter the EmailAddress';
+                              } else if (!emailRegex.hasMatch(value)) {
+                                return 'Please enter a valid email';
+                              }
+                              return null;
+                            },
+                          ),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * .02,
+                          ),
+                          TextFormWidget(
+                            controller: mobileNumberController,
+                            hintText: userModel.mobileNumber!,
+                            hintColor: Colors.black,
+                            keyboardType: TextInputType.phone,
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Please enter the phoneNumber';
+                              } else if (value.length < 11) {
+                                return 'Too short for a phone number';
+                              }
+                              return null;
+                            },
+                          ),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * .02,
+                          ),
+                          CustomButton(
+                            width: double.infinity,
+                            buttonColor: AppColors.buttonColor,
+                            text: 'Save',
+                            onPressed: () async {
+                              print('pressed');
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              const SizedBox(height: 30),
-              ElevatedButton(
-                  //   onPressed: (){},
-                  onPressed: () {  },
-                  child: const Text("Save"))
-            ],
-          ),
-        ),
+            );
+          } else if (userModel == null) {
+            return const Center(
+              child:Text('something Went Wrong'),
+            );
+          }else {
+            return Center(child: CircularProgressIndicator(color: AppColors.buttonColor,),);
+          }
+        },
       ),
     );
   }
 }
-/* <<<with clean code>>>
-
-// widget
-class ProfilePage extends StatefulWidget {
-  @override
-  _ProfilePageState createState() => _ProfilePageState();
-}
-
-// state
-class _ProfilePageState extends State<ProfilePage> {
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: buildAppBar(),
-      body: buildBody(),
-    );
-  }
-
-  AppBar buildAppBar() {
-    return AppBar(title: Text("Profile"));
-  }
-
-  Widget buildBody() {
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          buildProfileSection(),
-          buildDetailsCard()
-        ],
-      ),
-    );
-  }
-
-  Widget buildProfileSection() {
-  Column(
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(50),
-                child: Image.asset(" "),
-              ),
-              SizedBox(height: 20),
-              Text(
-                "name",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-              ),
-              SizedBox(height: 10),
-              Text("Email"),
-
-  }
-
-  Widget buildDetailsCard() {
-Card(
-                elevation: 5,
-                child: Padding(
-                  padding: const EdgeInsets.all(15),
-                  child: Column(
-                    children: [
-                      TextField(
-                        decoration: InputDecoration(labelText: "First Name"),
-                      ),
-                      SizedBox(height: 10),
-                      TextField(
-                        decoration: InputDecoration(labelText: "Last Name"),
-                      ),
-                      SizedBox(height: 10),
-                      TextField(
-                        decoration: InputDecoration(labelText: "Email"),
-                      ),
-                      SizedBox(height: 10),
-                      TextField(
-                        decoration: InputDecoration(labelText: "Phone"),
-                      ),
-                      SizedBox(height: 10),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: DropdownButtonFormField(
-                              items: [
-                                DropdownMenuItem(
-                                  child: Text("1"),
-                                  value: 1,
-                                ),
-                                DropdownMenuItem(
-                                  child: Text("2"),
-                                  value: 2,
-                                ),
-                                //etc
-                              ],
-                            ),
-                          ),
-                          SizedBox(width: 20),
-                          Expanded(
-                            child: DropdownButtonFormField(
-                              items: [
-                                DropdownMenuItem(
-                                  child: Text("Jan"),
-                                  value: 1,
-                                ),
-                                //etc months
-                              ],
-                            ),
-                          ),
-                          Expanded(
-                            child: DropdownButtonFormField(
-                              //years
-                            ),
-                          )
-                        ],
-                      )
-                    ],
-                  ),
-                ),
-              ),
-Widget buildProfileImage() {
-  return ClipRRect(
-    borderRadius: BorderRadius.circular(50),
-    child: Image.asset(profileImageAsset)
-  );
-}
-
-String get profileImageAsset => "assets/images/user.png";
-
-const double profileSectionPadding = 20;
-
-// usage
-Padding(
-  padding: EdgeInsets.all(profileSectionPadding)
-)
-  }
-
-}
-
- */

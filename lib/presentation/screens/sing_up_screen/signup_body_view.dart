@@ -1,15 +1,15 @@
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:etoile_app/constance/colors.dart';
 import 'package:etoile_app/data/models/user_model.dart';
-import 'package:etoile_app/helper/methods/generate_flag.dart';
 import 'package:etoile_app/presentation/widgets/custom_button.dart';
 import 'package:etoile_app/presentation/widgets/text_form_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../bussines_logic/signup_cubit/auth_cubit.dart';
+import '../../../bussines_logic/auth_cubit/auth_cubit.dart';
 import '../../../constance/strings.dart';
-import '../../../helper/methods/toast_message.dart';
+import '../../../core/helper/methods/generate_flag.dart';
+import '../../../core/helper/methods/toast_message.dart';
 
 class SignupBodyView extends StatefulWidget {
   const SignupBodyView({super.key});
@@ -53,7 +53,7 @@ class _SignupBodyViewState extends State<SignupBodyView> {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       physics: const BouncingScrollPhysics(),
-      child: BlocConsumer<SignUpCubit, AuthState>(
+      child: BlocConsumer<AuthCubit, AuthState>(
         listenWhen: (previous, current) {
           return previous != current;
         },
@@ -61,14 +61,13 @@ class _SignupBodyViewState extends State<SignupBodyView> {
           if (state is PhoneSubmittedAuthState) {
             Navigator.pushNamed(
               context,
-              AppStrings.otpScreen,
+              Routes.otpScreen,
               arguments: UserModel(
                   firstName: firstNameController.text,
                   lastName: lastNameController.text,
-                  emailAddress:emailController.text,
-                password: passwordController.text,
-                mobileNumber: mobileNumberController.text
-              ),
+                  emailAddress: emailController.text,
+                  password: passwordController.text,
+                  mobileNumber: mobileNumberController.text),
             );
           }
           if (state is ErrorOccurred) {
@@ -84,7 +83,7 @@ class _SignupBodyViewState extends State<SignupBodyView> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Image.asset(
-                    AppStrings.splashImage2,
+                    Routes.splashImage2,
                     height: 150,
                     width: 150,
                   ),
@@ -265,13 +264,16 @@ class _SignupBodyViewState extends State<SignupBodyView> {
                           return;
                         } else {
                           formKey.currentState!.save();
-                          await BlocProvider.of<SignUpCubit>(context)
+                          await BlocProvider.of<AuthCubit>(context)
                               .submitPhoneNUmber(
-                                  email: emailController.text,
-                                  password: passwordController.text,
-                                  firstName: firstNameController.text,
-                                  lastName: lastNameController.text,
-                                  phoneNumber: mobileNumberController.text);
+                            userModel: UserModel(
+                              firstName: firstNameController.text,
+                              lastName: lastNameController.text,
+                              emailAddress: emailController.text,
+                              password: passwordController.text,
+                              mobileNumber: mobileNumberController.text,
+                            ),
+                          );
                         }
                       },
                     ),

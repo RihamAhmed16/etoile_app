@@ -1,10 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:etoile_app/core/DI/dependency_injecion.dart';
 import 'package:etoile_app/data/models/cart_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class ApiCall {
-  final fireBase = FirebaseFirestore.instance;
-  final currentUser = FirebaseAuth.instance.currentUser!.uid;
+  final fireBase = serviceLocator.get<FirebaseFirestore>();
+  static final currentUser =
+      serviceLocator.get<FirebaseAuth>().currentUser!.uid;
 
   Future<QuerySnapshot<Map<String, dynamic>>> getCategoryProducts(
       {required num categoryId}) async {
@@ -16,13 +18,12 @@ class ApiCall {
         )
         .get();
   }
+
   Future<DocumentSnapshot<Map<String, dynamic>>> getProductDetails(
       {required String productId}) async {
-    return await fireBase
-        .collection('products')
-        .doc(productId)
-        .get();
+    return await fireBase.collection('products').doc(productId).get();
   }
+
   Future<QuerySnapshot<Map<String, dynamic>>> getDiscountProducts() async {
     return await fireBase
         .collection('products')
@@ -48,12 +49,28 @@ class ApiCall {
         .doc(currentUser)
         .collection('cart')
         .doc(cartModel.productId)
-        .set({
-      'product_id': cartModel.productId,
-      'image': cartModel.image,
-      'quantity': cartModel.quantity,
-      'price': cartModel.price,
-      'name': cartModel.name,
-    });
+        .set(cartModel.toJson());
+  }
+
+  Future<void> deleteFromBasket({required CartModel cartModel}) async {
+    await fireBase
+        .collection('users')
+        .doc(currentUser)
+        .collection('cart')
+        .doc(cartModel.productId)
+        .delete();
+  }
+
+  Future<DocumentSnapshot<Map<String, dynamic>>>
+      getCurrentUserInformation() async {
+    return await fireBase.collection('users').doc(currentUser).get();
+  }
+
+  Future<QuerySnapshot<Map<String, dynamic>>> getAddress() async {
+    return await fireBase
+        .collection('users')
+        .doc(currentUser)
+        .collection('Address')
+        .get();
   }
 }
