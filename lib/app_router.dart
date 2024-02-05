@@ -2,10 +2,12 @@ import 'package:etoile_app/bussines_logic/checkout_cubit/check_out_cubit.dart';
 import 'package:etoile_app/bussines_logic/orders_cubit/orders_cubit.dart';
 import 'package:etoile_app/constance/strings.dart';
 import 'package:etoile_app/core/DI/dependency_injecion.dart';
+import 'package:etoile_app/data/models/address_model.dart';
 import 'package:etoile_app/data/models/category_model.dart';
 import 'package:etoile_app/data/models/order_model.dart';
 import 'package:etoile_app/data/models/user_model.dart';
 import 'package:etoile_app/presentation/screens/address_screen/address_screen.dart';
+import 'package:etoile_app/presentation/screens/address_screen/widgets/edit_address_screen.dart';
 import 'package:etoile_app/presentation/screens/category_screen/categories_screen.dart';
 import 'package:etoile_app/presentation/screens/check_out/check_out_view.dart';
 import 'package:etoile_app/presentation/screens/check_out/widgets/credit_card_view.dart';
@@ -25,6 +27,7 @@ import 'package:etoile_app/presentation/screens/drawer/profile/profile.dart';
 import 'package:etoile_app/presentation/screens/drawer/settings/settings.dart';
 import 'package:etoile_app/presentation/screens/home_screen/home.dart';
 import 'package:etoile_app/presentation/screens/introduction_screen.dart';
+import 'package:etoile_app/presentation/screens/search_screen/search_screen_view.dart';
 import 'package:etoile_app/presentation/screens/sign_in_screen/login%20screen.dart';
 import 'package:etoile_app/presentation/screens/otp_screen/otp_screen.dart';
 import 'package:etoile_app/presentation/screens/product_details_screen/product_details_screen.dart';
@@ -69,7 +72,8 @@ class AppRouter {
         );
       case Routes.orderDetails:
         return MaterialPageRoute(
-          builder: (_) =>  OrderDetails(orderModel: settings.arguments as OrderModel),
+          builder: (_) =>
+              OrderDetails(orderModel: settings.arguments as OrderModel),
         );
       case Routes.signUpScreen:
         return MaterialPageRoute(
@@ -95,11 +99,15 @@ class AppRouter {
       case Routes.language:
         return MaterialPageRoute(builder: (_) => const Language());
       case Routes.creditCard:
-        return MaterialPageRoute(builder: (_) => const PaymentDetailsViewBody());
+        return MaterialPageRoute(
+            builder: (_) => const PaymentDetailsViewBody());
+      case Routes.searchScreen:
+        return MaterialPageRoute(
+            builder: (_) => const SearchScreenView());
       case Routes.orders:
         return MaterialPageRoute(
             builder: (_) => BlocProvider<OrdersCubit>(
-                create:(context)=> serviceLocator.get<OrdersCubit>(),
+                create: (context) => serviceLocator.get<OrdersCubit>(),
                 child: const MyOrder()));
       case Routes.policy:
         return MaterialPageRoute(builder: (_) => const Policy());
@@ -129,14 +137,25 @@ class AppRouter {
       case Routes.checkOut:
         return MaterialPageRoute(
           builder: (_) => BlocProvider<CheckOutCubit>(
-            create:(context)=> CheckOutCubit(serviceLocator(), serviceLocator()),
+            create: (context) =>
+                CheckOutCubit(serviceLocator(), serviceLocator()),
             child: const CheckOutView(),
+          ),
+        );
+      case Routes.addressDetails:
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider<CheckOutCubit>(
+            create: (context) =>
+                CheckOutCubit(serviceLocator(), serviceLocator()),
+            child: EditAddressScreen(
+                addressModel: settings.arguments as AddressModel),
           ),
         );
       case Routes.address:
         return MaterialPageRoute(
           builder: (_) => BlocProvider<CheckOutCubit>(
-            create:(context)=> CheckOutCubit(serviceLocator(), serviceLocator()),
+            create: (context) =>
+                CheckOutCubit(serviceLocator(), serviceLocator()),
             child: const AddressScreen(),
           ),
         );

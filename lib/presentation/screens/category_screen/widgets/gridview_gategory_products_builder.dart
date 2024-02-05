@@ -1,16 +1,16 @@
+import 'package:etoile_app/data/models/product_model.dart';
 import 'package:etoile_app/presentation/widgets/product_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../../data/models/category_model.dart';
 
 class GridViewGategoryProductsBuilder extends StatelessWidget {
   const GridViewGategoryProductsBuilder({
     super.key,
-    required this.categoryModel,
+    required this.products,
   });
 
-  final CategoryModel categoryModel;
+  final List<Products> products;
 
   @override
   Widget build(BuildContext context) {
@@ -24,10 +24,10 @@ class GridViewGategoryProductsBuilder extends StatelessWidget {
         childAspectRatio: .65,
       ),
       itemBuilder: (context, index) => ProductItem(
-        product: categoryModel.categoryProducts![index],
+        product: products[index],
         index: index,
       ),
-      itemCount: categoryModel.categoryProducts!.length,
+      itemCount: products.length,
     );
   }
 }

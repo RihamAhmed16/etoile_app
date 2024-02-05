@@ -14,9 +14,11 @@ import '../../helper/cach_helper.dart';
 part 'check_out_state.dart';
 
 class CheckOutCubit extends Cubit<CheckOutState> {
- final AddressRepo addressRepo;
-final OrdersRepo ordersRepo;
-  CheckOutCubit(this.addressRepo,this.ordersRepo) : super(CheckOutInitial());
+  final AddressRepo addressRepo;
+  final OrdersRepo ordersRepo;
+  AddressModel? addressModel;
+
+  CheckOutCubit(this.addressRepo, this.ordersRepo) : super(CheckOutInitial());
   TextEditingController firstNameController = TextEditingController();
   TextEditingController lastNameController = TextEditingController();
   TextEditingController streetName = TextEditingController();
@@ -107,7 +109,29 @@ final OrdersRepo ordersRepo;
     });
   }
 
+  Future<void> getAddressDetails({required String addressId}) async {
+    emit(GetAddressDetailsLoading());
+    await addressRepo.getAddressDetails(addressId: addressId).then((value) {
+      emit(GetAddressDetailsSuccess(addressModel: value));
+    }).catchError((error) {
+      emit(GetAddressDetailsFailure(error: error.toString()));
+    });
+  }
 
+  Future<void> editAddressDetails({
+    required String addressId,
+    required AddressModel addressModel,
+  }) async {
+    emit(EditAddressLoading());
+    await addressRepo
+        .updateAddressDetails(addressId: addressId, addressModel: addressModel)
+        .then((value) {
+      emit(EditAddressSuccess());
+    }).catchError((error) {
+      print(error.toString());
+      emit(GetAddressDetailsFailure(error: error.toString()));
+    });
+  }
 
   @override
   Future<void> close() {

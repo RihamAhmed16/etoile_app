@@ -47,7 +47,26 @@ class AddOrderFailure extends CheckOutState {
   AddOrderFailure({required this.error});
 }
 
+class GetAddressDetailsLoading extends CheckOutState {}
 
+class GetAddressDetailsSuccess extends CheckOutState {
+  final AddressModel addressModel;
+
+  GetAddressDetailsSuccess({required this.addressModel});
+}
+
+class GetAddressDetailsFailure extends CheckOutState {
+  final String error;
+
+  GetAddressDetailsFailure({required this.error});
+}
+class EditAddressLoading extends CheckOutState {}
+class EditAddressSuccess extends CheckOutState {}
+class EditAddressFailure extends CheckOutState {
+  final String error;
+
+  EditAddressFailure({required this.error});
+}
 class DeleteBasketLoading extends CheckOutState {}
 
 class DeleteBasketSuccess extends CheckOutState {}

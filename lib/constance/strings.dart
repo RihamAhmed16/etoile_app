@@ -26,5 +26,6 @@ abstract class Routes {
   static const creditCard = '/creditCard';
   static const successOrder = '/successOrder';
   static const orderDetails = '/orderDetails';
-
+  static const addressDetails = '/addressDetails';
+  static const searchScreen = '/searchScreen';
 }

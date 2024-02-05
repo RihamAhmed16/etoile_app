@@ -16,19 +16,27 @@ class CategoriesScreen extends StatefulWidget {
 }
 
 class _CategoriesScreenState extends State<CategoriesScreen> {
+  late TextEditingController textEditingController;
   @override
   void initState() {
+    textEditingController = TextEditingController();
     context.read<StoreCubit>().getCategoriesAndDiscountProducts(widget.categoryModel.id);
+
     super.initState();
   }
-
+@override
+  void dispose() {
+    textEditingController.dispose();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     return  Scaffold(
       backgroundColor:AppColors.backgroundColor,
       body: SafeArea(
         child: CategoriesScreenBody(
-          categoryModel: widget.categoryModel,
+          products: widget.categoryModel.categoryProducts!,
+          searchTerm: textEditingController,
         ),
       ),
     );

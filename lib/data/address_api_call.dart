@@ -53,7 +53,8 @@ class AddressApiCall {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
 
     // Navigate to the "cart" collection under the user's document
-    CollectionReference userCartCollection = firestore.collection('users').doc(currentUser).collection('cart');
+    CollectionReference userCartCollection =
+        firestore.collection('users').doc(currentUser).collection('cart');
 
     // Get all the documents in the "cart" collection
     QuerySnapshot cartSnapshot = await userCartCollection.get();
@@ -65,6 +66,27 @@ class AddressApiCall {
 
     // After deleting all documents, delete the "cart" collection itself
     await userCartCollection.doc('cart').delete();
+  }
 
+  Future<DocumentSnapshot<Map<String, dynamic>>> getAddressDetails(
+      {required String addressId}) async {
+    return await fireBase
+        .collection('users')
+        .doc(currentUser)
+        .collection('address')
+        .doc(addressId)
+        .get();
+  }
+
+  Future<void> updateAddressDetails(
+      {required String addressId, required AddressModel addressModel}) async {
+    await fireBase
+        .collection('users')
+        .doc(currentUser)
+        .collection('Address')
+        .doc(addressId)
+        .update(
+          addressModel.toJson(),
+        );
   }
 }

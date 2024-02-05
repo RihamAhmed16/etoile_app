@@ -89,3 +89,17 @@ class ProductsErrorState extends StoreState {
 
   ProductsErrorState({required this.error});
 }
+class GetAllProductsLoadingState extends StoreState {}
+class GetAllProductsSuccessState extends StoreState {}
+class GetAllProductsFailureState extends StoreState {
+  final String error;
+
+  GetAllProductsFailureState({required this.error});
+}
+class SearchedProductsSuccessState extends StoreState {}
+class SearchedProductsFailureState extends StoreState {
+   final String error;
+
+  SearchedProductsFailureState({required this.error});
+}
+class ClearSearchedProductsList extends StoreState {}

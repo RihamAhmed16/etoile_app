@@ -4,23 +4,27 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class DropDownFormFieldWidget extends StatefulWidget {
-  const DropDownFormFieldWidget({
+class EditDropDownFormFieldWidget extends StatefulWidget {
+  const EditDropDownFormFieldWidget({
     super.key,
     required this.items,
-    required this.isCity, this.addressModel,
+    required this.isCity,
+    this.addressModel,
+    required this.hintText,
   });
 
   final AddressModel? addressModel;
   final List<String> items;
   final bool isCity;
+  final String hintText;
 
   @override
-  State<DropDownFormFieldWidget> createState() =>
-      _DropDownFormFieldWidgetState();
+  State<EditDropDownFormFieldWidget> createState() =>
+      _EditDropDownFormFieldWidgetState();
 }
 
-class _DropDownFormFieldWidgetState extends State<DropDownFormFieldWidget> {
+class _EditDropDownFormFieldWidgetState
+    extends State<EditDropDownFormFieldWidget> {
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -34,7 +38,7 @@ class _DropDownFormFieldWidgetState extends State<DropDownFormFieldWidget> {
         },
         padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 2.h),
         decoration: InputDecoration(
-            hintText: 'Select Value',
+            hintText: widget.hintText,
             focusedBorder: InputBorder.none,
             enabledBorder: InputBorder.none,
             focusedErrorBorder: InputBorder.none,
@@ -43,15 +47,23 @@ class _DropDownFormFieldWidgetState extends State<DropDownFormFieldWidget> {
             contentPadding: EdgeInsets.symmetric(vertical: 10.h)),
         items: widget.items.map((String value) {
           return DropdownMenuItem<String>(
-            value:value,
+            value: value,
             child: Text(value),
           );
         }).toList(),
         onChanged: (String? value) {
           if (widget.isCity == true) {
-            context.read<CheckOutCubit>().city = value!;
+            if (value == null) {
+              context.read<CheckOutCubit>().city = widget.hintText;
+            } else {
+              context.read<CheckOutCubit>().city = value;
+            }
           } else {
-            context.read<CheckOutCubit>().orderPlace = value ?? widget.items[0];
+            if (value == null) {
+              context.read<CheckOutCubit>().orderPlace = widget.hintText;
+            } else {
+              context.read<CheckOutCubit>().orderPlace = value;
+            }
           }
         },
       ),

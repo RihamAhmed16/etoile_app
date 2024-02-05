@@ -6,15 +6,17 @@ import 'package:etoile_app/data/models/user_model.dart';
 import 'package:etoile_app/data/repository/store_repo.dart';
 import 'package:etoile_app/helper/cach_helper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../data/models/address_model.dart';
+
 part 'home_state.dart';
 
 class StoreCubit extends Cubit<StoreState> {
   StoreCubit(this.storeRepo) : super(HomeInitial());
   StoreRepo storeRepo;
-  UserModel ? userModel;
+  UserModel? userModel;
   double totalPrice = 0;
   List<Products> bestSeller = [];
   List<CategoryModel> firstSections = [];
@@ -23,21 +25,18 @@ class StoreCubit extends Cubit<StoreState> {
   List<CartModel> basketProducts = [];
   List<String> productsId = [];
   List<AddressModel> address = [];
-  Products ? productDetails;
+  List<Products> allProducts = [];
+  List<Products> searchedProducts = [];
+  bool isSearching = false;
+  TextEditingController searchTerm = TextEditingController();
+  Products? productDetails;
   CategoryModel discount =
       CategoryModel(name: 'Discount', categoryProducts: [], id: -1);
 
-  Future<void> getAddress() async {
-    storeRepo.getAddress().then((value) {
-      address = value;
-    }).catchError((error) {
-      print(error.toString());
-    });
-  }
   Future<void> getProductDetails({required String productId}) async {
     emit(GetProductDetailsLoading());
     await storeRepo.getProductDetails(productId: productId).then((value) {
-       productDetails = value;
+      productDetails = value;
       emit(GetProductDetailsSuccess());
     });
   }
@@ -55,13 +54,14 @@ class StoreCubit extends Cubit<StoreState> {
     });
   }
 
-  Future<void> removeFromBasket ({required CartModel cartModel}) async {
+  Future<void> removeFromBasket({required CartModel cartModel}) async {
     emit(RemoveFromBasketLoading());
     await storeRepo.deleteFromBasket(cartModel: cartModel).then((value) {
       int cartCount = CashHelper.getData(key: 'cartCount');
-      CashHelper.saveData(key: 'cartCount', value:cartCount-(1*cartModel.quantity));
+      CashHelper.saveData(
+          key: 'cartCount', value: cartCount - (1 * cartModel.quantity));
       emit(RemoveFromBasketSuccess());
-    }).catchError((error){
+    }).catchError((error) {
       emit(RemoveFromBasketFailure(error: error.toString()));
     });
   }
@@ -138,30 +138,28 @@ class StoreCubit extends Cubit<StoreState> {
   }
 
   void sortingProducts(
-      {required CategoryModel categoryModel, required String char}) {
+      {required List<Products> products, required String char}) {
     switch (char) {
       case 'z':
-        categoryModel.categoryProducts!
-            .sort((a, b) => b.name.compareTo(a.name));
+        products.sort((a, b) => b.name.compareTo(a.name));
         emit(ProductsSortingState());
         break;
       case 'a':
-        categoryModel.categoryProducts!
-            .sort((a, b) => a.name.compareTo(b.name));
+        products.sort((a, b) => a.name.compareTo(b.name));
         emit(ProductsSortingState());
         break;
       case 'h':
-        categoryModel.categoryProducts!.sort(
+        products.sort(
             (a, b) => double.parse(b.price).compareTo(double.parse(a.price)));
         emit(ProductsSortingState());
         break;
       case 'l':
-        categoryModel.categoryProducts!.sort(
+        products.sort(
             (a, b) => double.parse(a.price).compareTo(double.parse(b.price)));
         emit(ProductsSortingState());
         break;
       case 'n':
-        categoryModel.categoryProducts!.sort((a, b) {
+        products.sort((a, b) {
           var timestampA =
               double.parse(a.createdAt.millisecondsSinceEpoch.toString());
           var timestampB =
@@ -171,7 +169,7 @@ class StoreCubit extends Cubit<StoreState> {
         emit(ProductsSortingState());
         break;
       case 'b':
-        categoryModel.categoryProducts!.sort((a, b) {
+        products.sort((a, b) {
           if (a.isBestSeller && !b.isBestSeller) {
             return -1;
           } else if (!a.isBestSeller && b.isBestSeller) {
@@ -220,5 +218,43 @@ class StoreCubit extends Cubit<StoreState> {
       });
     }
     emit(ProductsSuccessState());
+  }
+
+  Future<void> getAllProducts() async {
+    emit(GetAllProductsLoadingState());
+    await storeRepo.getAllProducts().then((value) {
+      allProducts = value;
+      emit(GetAllProductsSuccessState());
+    }).catchError((error) {
+      emit(GetAllProductsFailureState(error: error.toString()));
+    });
+  }
+
+  void searchProduct(
+      {required String searchTerm, required List<Products> products}) {
+    try {
+      if (searchTerm.isEmpty || searchTerm == '') {
+        return;
+      } else {
+        if (allProducts.isNotEmpty) {
+          searchedProducts = products
+              .where(
+                  (element) => element.name.toLowerCase().contains(searchTerm))
+              .toList();
+          emit(SearchedProductsSuccessState());
+          isSearching = true;
+        } else {
+          return;
+        }
+      }
+    } catch (error) {
+      emit(SearchedProductsFailureState(error: error.toString()));
+    }
+  }
+
+  void clearSearchedList() {
+    searchedProducts.clear();
+    isSearching = false;
+    emit(ClearSearchedProductsList());
   }
 }

@@ -1,6 +1,7 @@
 import 'package:etoile_app/bussines_logic/home_cubit/home_cubit.dart';
 import 'package:etoile_app/constance/colors.dart';
 import 'package:etoile_app/constance/strings.dart';
+import 'package:etoile_app/data/models/product_model.dart';
 import 'package:etoile_app/helper/cach_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,9 +10,16 @@ import 'package:badges/badges.dart' as badges;
 import 'package:flutter_svg/flutter_svg.dart';
 
 class HomeHeader extends StatelessWidget {
-  const HomeHeader({super.key, required this.isHome});
+  const HomeHeader({
+    super.key,
+    required this.isHome,
+    required this.products,
+    this.textEditingController,
+  });
 
   final bool isHome;
+  final List<Products> products;
+  final TextEditingController? textEditingController;
 
   @override
   Widget build(BuildContext context) {
@@ -68,8 +76,10 @@ class HomeHeader extends StatelessWidget {
                 ),
                 Expanded(
                   child: Container(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
+                    height: 20.h,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 10.w,
+                    ),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(8),
@@ -82,19 +92,38 @@ class HomeHeader extends StatelessWidget {
                         ),
                       ],
                     ),
-                    child: const Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Search Here',
-                          style: TextStyle(color: Colors.grey),
+                    child: InkWell(
+                      onTap: () {
+                        if (isHome == true) {
+                          Navigator.pushNamed(context, Routes.searchScreen);
+                        } else {
+                          return;
+                        }
+                      },
+                      child: TextFormField(
+                        cursorColor: AppColors.buttonColor,
+                        controller: textEditingController,
+                        onChanged: (value) {
+                          if (textEditingController!.text.isEmpty) {
+                            context.read<StoreCubit>().clearSearchedList();
+                          } else {
+                            context.read<StoreCubit>().searchProduct(
+                                searchTerm: value, products: products);
+                          }
+                        },
+                        decoration: InputDecoration(
+                          hintText: 'Search Here',
+                          contentPadding: EdgeInsets.only(bottom: 10.h),
+                          hintStyle: const TextStyle(color: Colors.grey),
+                          border: InputBorder.none,
+                          enabled: isHome ? false : true,
+                          suffixIcon: Icon(
+                            Icons.search,
+                            size: 20.w,
+                            color: Colors.grey,
+                          ),
                         ),
-                        Icon(
-                          Icons.search,
-                          size: 15,
-                          color: Colors.grey,
-                        ),
-                      ],
+                      ),
                     ),
                   ),
                 ),
@@ -112,7 +141,7 @@ class HomeHeader extends StatelessWidget {
                   },
                   builder: (context, state) {
                     return InkWell(
-                      onTap: (){
+                      onTap: () {
                         Navigator.pushNamed(context, Routes.myBasket);
                       },
                       child: Padding(

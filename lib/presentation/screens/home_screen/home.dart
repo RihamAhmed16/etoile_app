@@ -23,10 +23,11 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   @override
   void initState() {
-      Future.wait([
+    Future.wait([
       context.read<StoreCubit>().getBestSeller(),
       context.read<StoreCubit>().getCategories(),
       context.read<StoreCubit>().getBasketProducts(),
+      context.read<StoreCubit>().getAllProducts(),
     ]);
     super.initState();
   }
@@ -38,7 +39,10 @@ class _HomeState extends State<Home> {
       body: SafeArea(
         child: Column(
           children: [
-            const HomeHeader(isHome: true),
+            const HomeHeader(
+              isHome: true,
+              products: [],
+            ),
             BlocBuilder<StoreCubit, StoreState>(
               builder: (context, state) {
                 if (state is BestSellerLoadingState ||
@@ -67,7 +71,7 @@ class _HomeState extends State<Home> {
                               homeModel: context
                                   .read<StoreCubit>()
                                   .firstSections[index],
-                              image:imagesForFirstListOfCategories[index] ,
+                              image: imagesForFirstListOfCategories[index],
                             ),
                             childCount:
                                 context.read<StoreCubit>().firstSections.length,
@@ -81,13 +85,15 @@ class _HomeState extends State<Home> {
                         SliverList(
                           delegate: SliverChildBuilderDelegate(
                             (context, index) => Sections(
-                                homeModel: context
-                                    .read<StoreCubit>()
-                                    .secondSections[index],
+                              homeModel: context
+                                  .read<StoreCubit>()
+                                  .secondSections[index],
                               image: imagesForSecondListOfCategories[index],
                             ),
-                            childCount:
-                                context.read<StoreCubit>().secondSections.length,
+                            childCount: context
+                                .read<StoreCubit>()
+                                .secondSections
+                                .length,
                           ),
                         ),
                       ],

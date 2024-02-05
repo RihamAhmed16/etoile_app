@@ -1,5 +1,5 @@
-
 import 'package:etoile_app/bussines_logic/checkout_cubit/check_out_cubit.dart';
+import 'package:etoile_app/constance/strings.dart';
 import 'package:etoile_app/data/models/address_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -19,7 +19,7 @@ class AddressItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        updateDefaultAddress(addressModel.id,context);
+        updateDefaultAddress(addressModel.id, context);
       },
       child: Card(
         elevation: 3.6,
@@ -68,7 +68,9 @@ class AddressItem extends StatelessWidget {
               padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 7.h),
               child: IconButton(
                 alignment: Alignment.bottomCenter,
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pushNamed(context,Routes.addressDetails,arguments: addressModel);
+                },
                 icon: const Icon(
                   Icons.edit_calendar_outlined,
                   color: Colors.black,
@@ -93,15 +95,12 @@ class AddressItem extends StatelessWidget {
       selectedAddress.isDefault = true;
 
       // Set isDefault to false for all other addresses
-      for (AddressModel address in context
-          .read<CheckOutCubit>()
-          .address) {
+      for (AddressModel address in context.read<CheckOutCubit>().address) {
         if (address.id != addressId) {
           address.isDefault = false;
         }
       }
-      context
-          .read<CheckOutCubit>().emitStateToUpdateUI();
+      context.read<CheckOutCubit>().emitStateToUpdateUI();
     }
   }
 }

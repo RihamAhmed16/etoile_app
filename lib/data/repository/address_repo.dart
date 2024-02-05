@@ -25,8 +25,19 @@ class AddressRepo {
     await addressApiCall.deleteAddress(id: id);
   }
 
-
   Future<void> clearBasket() async {
     await addressApiCall.clearBasket();
+  }
+
+  Future<AddressModel> getAddressDetails({required String addressId}) async {
+    final response =
+        await addressApiCall.getAddressDetails(addressId: addressId);
+    return AddressModel.fromJson(response.data()!);
+  }
+
+  Future<void> updateAddressDetails(
+      {required String addressId, required AddressModel addressModel}) async {
+    await addressApiCall.updateAddressDetails(
+        addressId: addressId, addressModel: addressModel);
   }
 }
