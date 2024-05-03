@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "817877824146",
+    "project_id": "etoil-app",
+    "storage_bucket": "etoil-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:817877824146:android:c45e1e5f5e89521da8ec4b",
+        "android_client_info": {
+          "package_name": "com.example.etoile_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDdjTVNPwj2Ji0QkG1KLMpk96NFZXSLWDA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
