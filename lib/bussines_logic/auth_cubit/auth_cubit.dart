@@ -9,8 +9,10 @@ part 'auth_state.dart';
 
 class AuthCubit extends Cubit<AuthState> {
   AuthCubit() : super(AuthInitial());
-  late String  verificationId ;
- UserModel ? userModel;
+  late String verificationId;
+
+  UserModel? userModel;
+
   static AuthCubit get(context) => BlocProvider.of(context);
   String? otp;
 
@@ -33,10 +35,7 @@ class AuthCubit extends Cubit<AuthState> {
             firstName: userModel.firstName,
             lastName: userModel.lastName,
             emailAddress: userModel.emailAddress,
-            uId: serviceLocator
-                .get<FirebaseAuth>()
-                .currentUser!
-                .uid,
+            uId: serviceLocator.get<FirebaseAuth>().currentUser!.uid,
             password: userModel.password,
             mobileNumber: userModel.mobileNumber,
           ),
@@ -61,12 +60,10 @@ class AuthCubit extends Cubit<AuthState> {
   Future<void> userCreate({
     required UserModel userModel,
   }) async {
-    await FirebaseFirestore.instance
+    await serviceLocator
+        .get<FirebaseFirestore>()
         .collection('users')
-        .doc(serviceLocator
-        .get<FirebaseAuth>()
-        .currentUser!
-        .uid)
+        .doc(serviceLocator.get<FirebaseAuth>().currentUser!.uid)
         .set(userModel.toMap());
   }
 
@@ -75,16 +72,16 @@ class AuthCubit extends Cubit<AuthState> {
     required UserModel userModel,
   }) async {
     emit(LoadingAuthState());
-    await FirebaseAuth.instance.verifyPhoneNumber(
-      phoneNumber: '+2${userModel.mobileNumber}',
-      timeout: const Duration(
-        seconds: 40,
-      ),
-      verificationCompleted: verificationCompleted,
-      verificationFailed: verificationFailed,
-      codeSent: codeSent,
-      codeAutoRetrievalTimeout: codeAutoRetrievalTimeout,
-    );
+    await serviceLocator.get<FirebaseAuth>().verifyPhoneNumber(
+          phoneNumber: '+2${userModel.mobileNumber}',
+          timeout: const Duration(
+            seconds: 40,
+          ),
+          verificationCompleted: verificationCompleted,
+          verificationFailed: verificationFailed,
+          codeSent: codeSent,
+          codeAutoRetrievalTimeout: codeAutoRetrievalTimeout,
+        );
   }
 
   void verificationCompleted(PhoneAuthCredential credential) async {
@@ -130,7 +127,7 @@ class AuthCubit extends Cubit<AuthState> {
   /// sign in with phoneNumber
   Future<void> signIn(PhoneAuthCredential credential) async {
     try {
-      await FirebaseAuth.instance.signInWithCredential(credential);
+      await serviceLocator.get<FirebaseAuth>().signInWithCredential(credential);
       emit(PhoneOtpVerifiedAuthState());
     } on FirebaseException catch (firebaseError) {
       if (firebaseError.code == 'invalid-verification-code') {
@@ -147,7 +144,14 @@ class AuthCubit extends Cubit<AuthState> {
 
   /// logOut
   Future<void> logOut() async {
-    await FirebaseAuth.instance.signOut();
+    emit(state);
+    try {
+      await serviceLocator.get<FirebaseAuth>().signOut().then((value) {
+        emit(SuccessLogOut());
+      });
+    } on FirebaseAuthException catch (error) {
+      emit(FailureLogOut(error: error.message ?? 'UnExpected error occurred'));
+    }
   }
 
   /// logIn user
@@ -156,43 +160,61 @@ class AuthCubit extends Cubit<AuthState> {
     required String password,
   }) {
     emit(LoadingLogIn());
-    try {
-      FirebaseAuth.instance
-          .signInWithEmailAndPassword(email: email, password: password)
-          .then((value) {
-        emit(SuccessLogIn());
-      });
-    } on FirebaseException catch (ex) {
-      if (ex.code == 'wrong-password') {
-        emit(
-          ErrorLogIn(errorMessage: 'Wrong Password'),
-        );
-      } else if (ex.code == 'invalid-email') {
-        emit(ErrorLogIn(errorMessage: 'Invalid Email'));
-      } else if (ex.code == 'user-disabled') {
-        emit(ErrorLogIn(errorMessage: 'Your Email Address has been Disabled'));
-      } else if (ex.code == 'user-not-found') {
-        emit(ErrorLogIn(errorMessage: 'This Email is not Exist'));
-      } else if (ex.code == 'too-many-requests') {
-        emit(ErrorLogIn(errorMessage: 'Too many requests try later'));
-      } else if (ex.code == 'network-request-failed') {
-        emit(ErrorLogIn(errorMessage: 'Network request failed'));
+    serviceLocator
+        .get<FirebaseAuth>()
+        .signInWithEmailAndPassword(email: email, password: password)
+        .then((value) {
+      emit(SuccessLogIn());
+    }).catchError((error) {
+      if (error is FirebaseAuthException) {
+        if (error.code == 'wrong-password') {
+          emit(ErrorLogIn(errorMessage: 'Wrong Password'));
+        } else if (error.code == 'invalid-email') {
+          emit(ErrorLogIn(errorMessage: 'Invalid Email'));
+        } else if (error.code == 'user-disabled') {
+          emit(ErrorLogIn(errorMessage: 'Your Email Address has been Disabled'));
+        } else if (error.code == 'user-not-found') {
+          emit(ErrorLogIn(errorMessage: 'This Email is not Exist'));
+        } else if (error.code == 'too-many-requests') {
+          emit(ErrorLogIn(errorMessage: 'Too many requests, try later'));
+        } else if (error.code == 'network-request-failed') {
+          emit(ErrorLogIn(errorMessage: 'Network request failed'));
+        } else if (error.code == 'invalid-credential') {
+          emit(ErrorLogIn(errorMessage: 'The supplied auth credential is incorrect, malformed, or has expired.'));
+        } else {
+          emit(ErrorLogIn(errorMessage: error.message ?? 'An unexpected error occurred'));
+        }
       } else {
-        emit(ErrorLogIn(errorMessage: ex.message.toString()));
+        emit(ErrorLogIn(errorMessage: error.toString()));
       }
-    } catch (error) {
-      emit(ErrorLogIn(errorMessage: error.toString()));
-    }
+    });
   }
+
 
   /// get current user information
   Future<void> getCurrentUserInformation() async {
     emit(GetCurrentUserInformationLoading());
-    await serviceLocator.get<FirebaseFirestore>().collection('users').doc(
-        serviceLocator.get<FirebaseAuth>().currentUser!.uid).get().then((value) {
-          userModel = UserModel.fromJson(value.data()!);
-          print(userModel!.emailAddress);
-          emit(GetCurrentUserInformationSuccess());
+    await serviceLocator
+        .get<FirebaseFirestore>()
+        .collection('users')
+        .doc(serviceLocator.get<FirebaseAuth>().currentUser!.uid)
+        .get()
+        .then((value) {
+      userModel = UserModel.fromJson(value.data()!);
+      print(userModel!.emailAddress);
+      emit(GetCurrentUserInformationSuccess());
     });
+  }
+
+  Future<void> resetPassword({required String email}) async {
+    emit(ForgerPasswordLoading());
+    try {
+      await serviceLocator.get<FirebaseAuth>().sendPasswordResetEmail(
+            email: email,
+          );
+      emit(ForgerPasswordSuccess());
+    } on FirebaseAuthException catch (e) {
+      emit(ForgerPasswordFailure(error: e.message ?? "An error occurred"));
+    }
   }
 }

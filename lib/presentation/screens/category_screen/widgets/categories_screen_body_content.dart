@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../bussines_logic/home_cubit/home_cubit.dart';
-import '../../../../constance/colors.dart';
-import '../../../../core/helper/methods/toast_message.dart';
 import 'listview_category_products_builder.dart';
 
 class CategoriesScreenBodyContent extends StatefulWidget {
@@ -39,16 +37,6 @@ class _CategoriesScreenBodyContentState
       child: BlocConsumer<StoreCubit, StoreState>(
           listenWhen: (previous, current) => previous != current,
           listener: (context, state) {
-            if (state is AddToBasketLoading) {
-              showDialog(
-                context: context,
-                builder: (context) => Center(
-                  child: CircularProgressIndicator(
-                    color: AppColors.buttonColor,
-                  ),
-                ),
-              );
-            }
             if (state is SearchedProductsSuccessState) {
               finalProducts = context.read<StoreCubit>().searchedProducts;
             }
@@ -57,12 +45,6 @@ class _CategoriesScreenBodyContentState
             }
             if (state is ProductsSuccessState) {
               finalProducts = widget.products;
-            }
-            if (state is AddToBasketSuccess) {
-              Navigator.pop(context);
-              showToast(
-                  text: 'The product has been added to your cart Successfully',
-                  state: Toaststate.SUCCESS);
             }
           },
           buildWhen: (previous, current) => previous != current,

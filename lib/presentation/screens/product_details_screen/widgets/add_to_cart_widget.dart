@@ -1,11 +1,9 @@
-import 'package:etoile_app/bussines_logic/home_cubit/home_cubit.dart';
+import 'package:etoile_app/core/helper/methods/add_product_to_basket.dart';
 import 'package:etoile_app/data/models/product_model.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../constance/colors.dart';
-import '../../../../data/models/cart_model.dart';
 import '../../../widgets/custom_button.dart';
 
 class AddToCartButton extends StatefulWidget {
@@ -104,44 +102,8 @@ class _AddToCartButtonState extends State<AddToCartButton> {
             text: 'Add To Basket',
             width: double.infinity,
             buttonColor: AppColors.buttonColor,
-            onPressed: () {
-              if (BlocProvider.of<StoreCubit>(context)
-                  .basketProducts
-                  .map((e) => e.productId)
-                  .toList()
-                  .contains(widget.product.productId)) {
-                int fireBaseQuantity = 0;
-                if (isClicked) {
-                  fireBaseQuantity = quantity;
-                  double price = double.parse(widget.product.price);
-                  double totalPrice = price * fireBaseQuantity;
-                  BlocProvider.of<StoreCubit>(context).updateProductQuantity(
-                    productId: widget.product.productId,
-                    quantity: fireBaseQuantity,
-                    price: totalPrice.toString(),
-                  );
-                } else {
-                  fireBaseQuantity = 1;
-                  BlocProvider.of<StoreCubit>(context).updateProductQuantity(
-                    productId: widget.product.productId,
-                    quantity: fireBaseQuantity,
-                    price: widget.product.price,
-                  );
-                }
-              } else {
-                BlocProvider.of<StoreCubit>(context)
-                    .addToBasket(
-                  cartModel: CartModel(
-                      image: widget.product.image,
-                      price: double.parse(widget.product.price),
-                      productId: widget.product.productId,
-                      name: widget.product.name,
-                      quantity: quantity),
-                )
-                    .then((value) {
-                  BlocProvider.of<StoreCubit>(context).getBasketProducts();
-                });
-              }
+            onPressed:(){
+              addProductToBasket(context, quantity,widget.product);
             },
           ),
         ],

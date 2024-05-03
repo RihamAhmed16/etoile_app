@@ -28,4 +28,7 @@ abstract class Routes {
   static const orderDetails = '/orderDetails';
   static const addressDetails = '/addressDetails';
   static const searchScreen = '/searchScreen';
+  static const changePasswordScreen = '/changePassword';
+  static const deleteAccountScreen = '/deleteAccount';
+  static const forgetPasswordScreen = '/forgePassword';
 }

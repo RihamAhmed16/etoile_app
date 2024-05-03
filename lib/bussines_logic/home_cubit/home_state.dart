@@ -13,16 +13,20 @@ class CategoriesFailureState extends StoreState {
 
   CategoriesFailureState({required this.error});
 }
+
 class RemoveFromBasketLoading extends StoreState {}
+
 class RemoveFromBasketSuccess extends StoreState {}
+
 class RemoveFromBasketFailure extends StoreState {
   final String error;
+
   RemoveFromBasketFailure({required this.error});
 }
+
 class GetProductDetailsLoading extends StoreState {}
 
 class GetProductDetailsSuccess extends StoreState {
-
   GetProductDetailsSuccess();
 }
 
@@ -89,17 +93,39 @@ class ProductsErrorState extends StoreState {
 
   ProductsErrorState({required this.error});
 }
+
 class GetAllProductsLoadingState extends StoreState {}
+
 class GetAllProductsSuccessState extends StoreState {}
+
 class GetAllProductsFailureState extends StoreState {
   final String error;
 
   GetAllProductsFailureState({required this.error});
 }
+
 class SearchedProductsSuccessState extends StoreState {}
+
 class SearchedProductsFailureState extends StoreState {
-   final String error;
+  final String error;
 
   SearchedProductsFailureState({required this.error});
 }
+
 class ClearSearchedProductsList extends StoreState {}
+
+class GetAllAddressesLoading extends StoreState {}
+
+class GetAllAddressesSuccess extends StoreState {}
+
+class GetAllAddressesFailure extends StoreState {}
+
+class UpdateQuantityLoading extends StoreState {}
+
+class UpdateQuantitySuccess extends StoreState {}
+
+class UpdateQuantityFailure extends StoreState {
+  final String error;
+
+  UpdateQuantityFailure({required this.error});
+}

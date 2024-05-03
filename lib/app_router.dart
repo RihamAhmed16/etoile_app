@@ -1,5 +1,6 @@
 import 'package:etoile_app/bussines_logic/checkout_cubit/check_out_cubit.dart';
 import 'package:etoile_app/bussines_logic/orders_cubit/orders_cubit.dart';
+import 'package:etoile_app/bussines_logic/settings_cubit/settings_cubit.dart';
 import 'package:etoile_app/constance/strings.dart';
 import 'package:etoile_app/core/DI/dependency_injecion.dart';
 import 'package:etoile_app/data/models/address_model.dart';
@@ -25,6 +26,9 @@ import 'package:etoile_app/presentation/screens/drawer/order/widgets/order_detai
 import 'package:etoile_app/presentation/screens/drawer/policy/policy.dart';
 import 'package:etoile_app/presentation/screens/drawer/profile/profile.dart';
 import 'package:etoile_app/presentation/screens/drawer/settings/settings.dart';
+import 'package:etoile_app/presentation/screens/drawer/settings/widgets/change_password_view.dart';
+import 'package:etoile_app/presentation/screens/drawer/settings/widgets/delete_user_account_view.dart';
+import 'package:etoile_app/presentation/screens/forget_password/forget_password_view.dart';
 import 'package:etoile_app/presentation/screens/home_screen/home.dart';
 import 'package:etoile_app/presentation/screens/introduction_screen.dart';
 import 'package:etoile_app/presentation/screens/search_screen/search_screen_view.dart';
@@ -83,27 +87,51 @@ class AppRouter {
           ),
         );
       case Routes.homeScreen:
-        return MaterialPageRoute(builder: (_) => const Home());
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider.value(
+              value: serviceLocator.get<AuthCubit>(), child: const Home()),
+        );
       case Routes.aboutUs:
         return MaterialPageRoute(builder: (_) => const AboutUs());
       case Routes.myAddresses:
-        return MaterialPageRoute(builder: (_) => const MyAddresses());
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider.value(
+            value: serviceLocator.get<CheckOutCubit>(),
+            child: const MyAddresses(),
+          ),
+        );
       case Routes.branches:
         return MaterialPageRoute(builder: (_) => const Branches());
       case Routes.drawerCategories:
         return MaterialPageRoute(builder: (_) => const DrawerCategories());
       case Routes.contactUs:
         return MaterialPageRoute(builder: (_) => const ContactUs());
+      case Routes.changePasswordScreen:
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider.value(
+            value: serviceLocator.get<SettingsCubit>(),
+            child: const ChangePasswordView(),
+          ),
+        );
+      case Routes.deleteAccountScreen:
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider.value(
+            value: serviceLocator.get<SettingsCubit>(),
+            child: const DeleteUserAccountView(),
+          ),
+        );
       case Routes.delivery:
         return MaterialPageRoute(builder: (_) => const Delivery());
       case Routes.language:
-        return MaterialPageRoute(builder: (_) => const Language());
+        return MaterialPageRoute(
+            builder: (_) => BlocProvider.value(
+                value: serviceLocator.get<SettingsCubit>(),
+                child: const Language()));
       case Routes.creditCard:
         return MaterialPageRoute(
             builder: (_) => const PaymentDetailsViewBody());
       case Routes.searchScreen:
-        return MaterialPageRoute(
-            builder: (_) => const SearchScreenView());
+        return MaterialPageRoute(builder: (_) => const SearchScreenView());
       case Routes.orders:
         return MaterialPageRoute(
             builder: (_) => BlocProvider<OrdersCubit>(
@@ -119,7 +147,12 @@ class AppRouter {
           ),
         );
       case Routes.settings:
-        return MaterialPageRoute(builder: (_) => const Settings());
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider.value(
+            value: serviceLocator.get<SettingsCubit>(),
+            child: const Settings(),
+          ),
+        );
       // case AppStrings.mapScreen:
       //   return MaterialPageRoute(
       //     builder: (_) => MapScreen(),
@@ -136,27 +169,31 @@ class AppRouter {
         );
       case Routes.checkOut:
         return MaterialPageRoute(
-          builder: (_) => BlocProvider<CheckOutCubit>(
-            create: (context) =>
-                CheckOutCubit(serviceLocator(), serviceLocator()),
+          builder: (_) => BlocProvider.value(
+            value: serviceLocator.get<CheckOutCubit>(),
             child: const CheckOutView(),
           ),
         );
       case Routes.addressDetails:
         return MaterialPageRoute(
-          builder: (_) => BlocProvider<CheckOutCubit>(
-            create: (context) =>
-                CheckOutCubit(serviceLocator(), serviceLocator()),
+          builder: (_) => BlocProvider.value(
+            value: serviceLocator.get<CheckOutCubit>(),
             child: EditAddressScreen(
                 addressModel: settings.arguments as AddressModel),
           ),
         );
       case Routes.address:
         return MaterialPageRoute(
-          builder: (_) => BlocProvider<CheckOutCubit>(
-            create: (context) =>
-                CheckOutCubit(serviceLocator(), serviceLocator()),
+          builder: (_) => BlocProvider.value(
+            value: serviceLocator.get<CheckOutCubit>(),
             child: const AddressScreen(),
+          ),
+        );
+      case Routes.forgetPasswordScreen:
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider.value(
+            value: serviceLocator.get<AuthCubit>(),
+            child: const ForgetPasswordView(),
           ),
         );
     }

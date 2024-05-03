@@ -39,7 +39,7 @@ class CategoryListItem extends StatelessWidget {
             Expanded(
               flex: 2,
               child: ClipRRect(
-                borderRadius: const BorderRadius.all(Radius.circular(10)),
+                borderRadius:  BorderRadius.all(Radius.circular(8.r)),
                 child: Image.network(
                   categoryModel.image ??'',
                   height: 35.h,

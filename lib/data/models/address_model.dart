@@ -9,7 +9,7 @@ class AddressModel {
   late final String apartmentNumber;
   late final String city;
   late final String phoneNumber;
-   bool? isDefault;
+  bool? isDefault;
 
   AddressModel(
       {required this.firstName,

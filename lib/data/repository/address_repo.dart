@@ -18,7 +18,7 @@ class AddressRepo {
   }
 
   Future<void> addAddress({required AddressModel addressModel}) async {
-    await addressApiCall.addAddress(addressModel: addressModel, id: id);
+    await addressApiCall.addAddress(addressModel: addressModel,);
   }
 
   Future<void> deleteAddress({required String id}) async {
@@ -36,8 +36,8 @@ class AddressRepo {
   }
 
   Future<void> updateAddressDetails(
-      {required String addressId, required AddressModel addressModel}) async {
+      {required AddressModel addressModel}) async {
     await addressApiCall.updateAddressDetails(
-        addressId: addressId, addressModel: addressModel);
+        addressModel: addressModel);
   }
 }

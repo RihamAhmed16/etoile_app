@@ -1,6 +1,9 @@
 import 'package:etoile_app/constance/strings.dart';
+import 'package:etoile_app/constance/translation_constance.dart';
+import 'package:etoile_app/core/helper/methods/show_progress_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../bussines_logic/auth_cubit/auth_cubit.dart';
 import '../../../constance/colors.dart';
@@ -46,11 +49,16 @@ class _LoginState extends State<Login> {
           child: BlocConsumer<AuthCubit, AuthState>(
             listener: (context, state) {
               if (state is ErrorLogIn) {
+                Navigator.pop(context);
                 showToast(text: state.errorMessage, state: Toaststate.ERROR);
               }
               if (state is SuccessLogIn) {
+                Navigator.pop(context);
                 Navigator.pushNamedAndRemoveUntil(
                     context, Routes.homeScreen, (route) => false);
+              }
+              if (state is LoadingLogIn) {
+                showProgressIndicator(context);
               }
             },
             builder: (context, state) {
@@ -74,12 +82,12 @@ class _LoginState extends State<Login> {
                       ),
                       TextFormWidget(
                         controller: emailController,
-                        hintText: 'Email Address',
+                        hintText: TranslationConstance.hintEmail,
                         validator: (value) {
                           if (value!.isEmpty) {
-                            return 'Please enter your email';
+                            return TranslationConstance.warningEmptyField;
                           } else if (!value.contains('@')) {
-                            return 'Email Should contain @';
+                            return TranslationConstance.emailCharacter;
                           } else {
                             return null;
                           }
@@ -105,21 +113,37 @@ class _LoginState extends State<Login> {
                           ),
                           validator: (value) {
                             if (value!.isEmpty) {
-                              return 'Please enter your Password';
+                              return TranslationConstance.warningEmptyField;
                             } else if (value.length < 6) {
-                              return 'wrong password';
+                              return TranslationConstance.passwordLength;
                             } else {
                               return null;
                             }
                           },
-                          hintText: 'PassWord'),
+                          hintText:TranslationConstance.hintPassword),
                       SizedBox(
                         height: MediaQuery.of(context).size.height * .03,
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.pushNamed(
+                              context, Routes.forgetPasswordScreen);
+                        },
+                        child: const Align(
+                          alignment: Alignment.centerRight,
+                          child: Text(
+                            'Forget Password ?',
+                            style: TextStyle(fontWeight: FontWeight.w500),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10.h,
                       ),
                       CustomButton(
                         width: double.infinity,
                         buttonColor: AppColors.buttonColor,
-                        text: 'LOG IN',
+                        text: TranslationConstance.logIn,
                         onPressed: () {
                           if (!formKey.currentState!.validate()) {
                             return;
@@ -143,11 +167,10 @@ class _LoginState extends State<Login> {
                           ),
                           GestureDetector(
                             onTap: () {
-                              Navigator.pushNamed(
-                                  context, Routes.signUpScreen);
+                              Navigator.pushNamed(context, Routes.signUpScreen);
                             },
                             child: const Text(
-                              'SIGN UP',
+                              TranslationConstance.signUp,
                               style: TextStyle(fontWeight: FontWeight.bold),
                             ),
                           ),

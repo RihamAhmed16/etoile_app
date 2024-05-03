@@ -43,7 +43,7 @@ class ApiCall {
         .get();
   }
 
-  Future<void> addToBasket({required CartModel cartModel}) async {
+  Future<void> addToBasket({required CartProduct cartModel}) async {
     await fireBase
         .collection('users')
         .doc(currentUser)
@@ -52,7 +52,7 @@ class ApiCall {
         .set(cartModel.toJson());
   }
 
-  Future<void> deleteFromBasket({required CartModel cartModel}) async {
+  Future<void> deleteFromBasket({required CartProduct cartModel}) async {
     await fireBase
         .collection('users')
         .doc(currentUser)

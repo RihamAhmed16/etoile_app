@@ -1,4 +1,7 @@
+import 'package:easy_localization/easy_localization.dart';
+import 'package:etoile_app/constance/app_styles.dart';
 import 'package:etoile_app/constance/colors.dart';
+import 'package:etoile_app/constance/translation_constance.dart';
 import 'package:etoile_app/data/models/product_model.dart';
 import 'package:etoile_app/presentation/screens/product_details_screen/widgets/product_description_widget.dart';
 import 'package:etoile_app/presentation/screens/product_details_screen/widgets/product_size_widget.dart';
@@ -51,38 +54,45 @@ class ProductDetailsBody extends StatelessWidget {
               height: 10.h,
             ),
             Text(
-              'EGP ${product.price}',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.sp),
+              '${TranslationConstance.currency.tr()} ${product.price}',
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14.sp,
+                  fontFamily: AppStyles.almaraiFontFamily),
             ),
             SizedBox(
               height: 6.h,
             ),
             Text(
-              'All Prices include VAT Details',
+              TranslationConstance.vatDetails.tr(),
               style: TextStyle(
-                color: Colors.grey.withOpacity(.6),
-              ),
+                  color: Colors.grey.withOpacity(.6),
+                  fontFamily: AppStyles.almaraiFontFamily),
             ),
             SizedBox(
               height: 10.h,
             ),
             Text(
-              'Product Code : ${product.productCode}',
-              style: const TextStyle(color: Colors.black87),
+              '${TranslationConstance.productCode.tr()} : ${product.productCode}',
+              style: const TextStyle(
+                  color: Colors.black87,
+                  fontFamily: AppStyles.almaraiFontFamily),
             ),
             SizedBox(
               height: 10.h,
             ),
-            RatingStarWidget(product: product,),
+            RatingStarWidget(
+              product: product,
+            ),
             Divider(
               color: AppColors.buttonColor,
               thickness: 1.3,
             ),
             Row(
               children: [
-                const Text(
-                  'Size',
-                  style: TextStyle(color: Colors.black87),
+                 Text(
+                  TranslationConstance.size.tr(),
+                  style:const TextStyle(color: Colors.black87),
                 ),
                 SizedBox(
                   width: 10.w,
@@ -94,18 +104,29 @@ class ProductDetailsBody extends StatelessWidget {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('Delivered\n Within'),
+                Text(
+                  TranslationConstance.deliveryWithIn.tr(),
+                  style: const TextStyle(
+                    fontFamily: AppStyles.almaraiFontFamily,
+                  ),
+                ),
                 SizedBox(
                   width: 15.w,
                 ),
-                const Expanded(
+                Expanded(
                   child: Text(
-                      '45 - 60 mins\nOrder may delivered lately many Minutes in case rush hours (The product may differ from the image\ndaily)'),
+                    '${TranslationConstance.minute.tr()}\n${TranslationConstance.deliveryDetails.tr()}',
+                    style: const TextStyle(
+                        fontFamily: AppStyles.almaraiFontFamily,
+                        fontWeight: FontWeight.w300),
+                  ),
                 ),
               ],
             ),
             Divider(color: AppColors.buttonColor, thickness: 1.3),
-            ProductDescriptionWidget(productDescription: product.description,),
+            ProductDescriptionWidget(
+              productDescription: product.description,
+            ),
             Divider(color: AppColors.buttonColor, thickness: 1.3),
             DetailsContainerWidget(product: product),
             Divider(color: AppColors.buttonColor, thickness: 1.3),
@@ -118,7 +139,3 @@ class ProductDetailsBody extends StatelessWidget {
     );
   }
 }
-
-
-
-

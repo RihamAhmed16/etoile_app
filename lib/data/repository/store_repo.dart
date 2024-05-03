@@ -20,10 +20,10 @@ class StoreRepo {
         .toList();
   }
 
-  Future<List<CartModel>> getBasketProducts() async {
+  Future<List<CartProduct>> getBasketProducts() async {
     final response = await apiCall.getBasketProducts();
     return response.docs
-        .map((element) => CartModel.fromJson(element.data()))
+        .map((element) => CartProduct.fromJson(element.data()))
         .toList();
   }
 
@@ -41,11 +41,11 @@ class StoreRepo {
         .toList();
   }
 
-  Future<void> addToBasket({required CartModel cartModel}) async {
+  Future<void> addToBasket({required CartProduct cartModel}) async {
     await apiCall.addToBasket(cartModel: cartModel);
   }
 
-  Future<void> deleteFromBasket({required CartModel cartModel}) async {
+  Future<void> deleteFromBasket({required CartProduct cartModel}) async {
     await apiCall.deleteFromBasket(cartModel: cartModel);
   }
 
@@ -53,5 +53,12 @@ class StoreRepo {
     final response = await apiCall.getProductDetails(productId: productId);
 
     return Products.fromJson(response.data() ?? {});
+  }
+
+  Future<void> updateProductQuantity(
+      {required String productId,
+      required int quantity,
+      required String price}) async {
+
   }
 }

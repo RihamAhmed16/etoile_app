@@ -5,11 +5,11 @@ import 'package:etoile_app/data/models/order_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../data/models/address_model.dart';
 import '../../data/repository/address_repo.dart';
 import '../../data/repository/orders_repo.dart';
-import '../../helper/cach_helper.dart';
 
 part 'check_out_state.dart';
 
@@ -63,11 +63,11 @@ class CheckOutCubit extends Cubit<CheckOutState> {
         floorNumber: int.parse(floorNumber.text),
         apartmentNumber: apartmentNumber.text,
         city: city,
+        id: const Uuid().v4(),
         phoneNumber: mobileNumberController.text,
-        id: addressRepo.id,
         isDefault: address.isEmpty ? true : false);
     await addressRepo.addAddress(addressModel: addressModel).then((value) {
-      CashHelper.saveData(key: 'isMakedAddress', value: true);
+      address.add(addressModel);
       emit(AddAddressSuccess());
     }).catchError((error) {
       emit(AddAddressFailure(error: error.toString()));
@@ -119,12 +119,11 @@ class CheckOutCubit extends Cubit<CheckOutState> {
   }
 
   Future<void> editAddressDetails({
-    required String addressId,
     required AddressModel addressModel,
   }) async {
     emit(EditAddressLoading());
     await addressRepo
-        .updateAddressDetails(addressId: addressId, addressModel: addressModel)
+        .updateAddressDetails(addressModel: addressModel)
         .then((value) {
       emit(EditAddressSuccess());
     }).catchError((error) {

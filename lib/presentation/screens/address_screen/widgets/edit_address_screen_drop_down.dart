@@ -30,12 +30,6 @@ class _EditDropDownFormFieldWidgetState
     return Card(
       elevation: 4,
       child: DropdownButtonFormField<String>(
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return 'Please select a value';
-          }
-          return null;
-        },
         padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 2.h),
         decoration: InputDecoration(
             hintText: widget.hintText,
@@ -44,7 +38,7 @@ class _EditDropDownFormFieldWidgetState
             focusedErrorBorder: InputBorder.none,
             border: InputBorder.none,
             errorBorder: InputBorder.none,
-            contentPadding: EdgeInsets.symmetric(vertical: 10.h)),
+            contentPadding: EdgeInsets.symmetric(vertical: 10.h),),
         items: widget.items.map((String value) {
           return DropdownMenuItem<String>(
             value: value,

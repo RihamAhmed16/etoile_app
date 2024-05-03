@@ -1,4 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:etoile_app/helper/cach_helper.dart';
+
+import '../../core/helper/language_services.dart';
 
 class Products {
   late String category;
@@ -37,8 +40,12 @@ class Products {
       required this.productCode});
 
   Products.fromJson(Map<String, dynamic> json) {
-    name = json['name'];
-    size = json['Size']??'';
+    name = CashHelper.getData(key: 'languageCode') == 'en'
+        ? json['name']
+        : json['name_ar'];
+    size = CashHelper.getData(key: 'languageCode') == 'en'
+        ? json['Size'] ?? ''
+        : json['size_ar'];
     oldPrice = json['oldPrice'];
     discount = json['discount'];
     isBestSeller = json['isBestSeller'];
@@ -47,11 +54,15 @@ class Products {
     isDiscount = json['isDiscount'];
     numberInCart = json['number_cart'] ?? '';
     price = json['price'] ?? '';
-    category = json['category'] ?? '';
+    category = CashHelper.getData(key: 'languageCode') == 'en'
+        ? json['category'] ?? ''
+        : json['category_ar'];
     rating = json['rating'] ?? '';
     image = json['image'] ?? '';
     productCode = json['code'] ?? '';
-    description = json['descriptions'] ?? '';
+    description = CashHelper.getData(key: 'languageCode') == 'en'
+        ? json['descriptions'] ?? ''
+        : json['descriptions_ar'];
     createdAt = json['created_at'] ?? '';
   }
 }

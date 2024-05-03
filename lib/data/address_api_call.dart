@@ -18,16 +18,12 @@ class AddressApiCall {
         .get();
   }
 
-  Future<void> addAddress(
-      {required AddressModel addressModel, required String id}) async {
+  Future<void> addAddress({required AddressModel addressModel}) async {
     await fireBase
         .collection('users')
         .doc(currentUser)
         .collection('Address')
-        .doc(id)
-        .set(
-          addressModel.toJson(),
-        );
+        .doc(addressModel.id).set(addressModel.toJson());
   }
 
   Future<void> deleteAddress({required String id}) async {
@@ -79,12 +75,12 @@ class AddressApiCall {
   }
 
   Future<void> updateAddressDetails(
-      {required String addressId, required AddressModel addressModel}) async {
+      {required AddressModel addressModel}) async {
     await fireBase
         .collection('users')
         .doc(currentUser)
         .collection('Address')
-        .doc(addressId)
+        .doc(addressModel.id)
         .update(
           addressModel.toJson(),
         );

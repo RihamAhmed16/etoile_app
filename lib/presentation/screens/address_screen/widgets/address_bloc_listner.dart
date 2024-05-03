@@ -20,7 +20,7 @@ class AddressBlocListenerWidget extends StatelessWidget {
         }
         if (state is AddAddressSuccess) {
           Navigator.pop(context);
-          Navigator.pushReplacementNamed(context, Routes.checkOut);
+          Navigator.pop(context);
         }
         if (state is AddAddressFailure) {
           String errorMessage = state.error;

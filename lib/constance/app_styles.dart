@@ -1,16 +1,17 @@
-
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 abstract class AppStyles {
-  static const TextStyle textStyle24 =  TextStyle(
+  static TextStyle textStyle24 = TextStyle(
     color: Colors.black,
-    fontSize: 24,
+    fontSize: 22.sp,
     fontWeight: FontWeight.bold,
   );
 
-  static const TextStyle textStyle18 = TextStyle(
+  static TextStyle textStyle18 = TextStyle(
     color: Colors.black,
-    fontSize: 18,
+    fontSize: 16.sp,
     height: 1.4,
   );
+  static const almaraiFontFamily = 'Almarai';
 }

@@ -4,9 +4,12 @@ import 'package:etoile_app/constance/colors.dart';
 import 'package:etoile_app/constance/strings.dart';
 import 'package:etoile_app/core/helper/methods/toast_message.dart';
 import 'package:etoile_app/presentation/screens/check_out/widgets/address_item.dart';
+import 'package:etoile_app/presentation/screens/check_out/widgets/addresses_list_view_widget.dart';
 import 'package:etoile_app/presentation/screens/check_out/widgets/checkout_product_item.dart';
 import 'package:etoile_app/presentation/screens/check_out/widgets/checkout_state_widget.dart';
+import 'package:etoile_app/presentation/screens/check_out/widgets/choosen_payment_widget.dart';
 import 'package:etoile_app/presentation/screens/check_out/widgets/final_cost_widget.dart';
+import 'package:etoile_app/presentation/screens/check_out/widgets/header_addresses_section.dart';
 import 'package:etoile_app/presentation/screens/check_out/widgets/payment_method_widget.dart';
 import 'package:etoile_app/presentation/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
@@ -25,6 +28,7 @@ class CheckOutView extends StatefulWidget {
 class _CheckOutViewState extends State<CheckOutView> {
   double shippingValue = 30.6;
   late double totalPrice;
+  int activeStep = 0;
 
   @override
   void initState() {
@@ -35,6 +39,8 @@ class _CheckOutViewState extends State<CheckOutView> {
 
   @override
   Widget build(BuildContext context) {
+    var checkOutCubit = context.read<CheckOutCubit>();
+    var storeCubit = context.read<StoreCubit>();
     return Scaffold(
       appBar: AppBar(
         title: const Text('CheckOut'),
@@ -43,17 +49,15 @@ class _CheckOutViewState extends State<CheckOutView> {
         text: 'Next',
         width: double.infinity,
         onPressed: () {
-          if (context.read<StoreCubit>().basketProducts.isEmpty) {
+          if (storeCubit.basketProducts.isEmpty) {
             showToast(
                 text: 'You Basket is Empty😅 Add some Products 🥰',
                 state: Toaststate.SUCCESS);
           } else {
-            if (context.read<CheckOutCubit>().activeStep == 2) {
-              BlocProvider.of<CheckOutCubit>(context)
-                  .addOrder(context: context, totalAmount: totalPrice);
+            if (checkOutCubit.activeStep == 2) {
+              checkOutCubit.addOrder(context: context, totalAmount: totalPrice);
             } else {
-              context.read<CheckOutCubit>().activeStep =
-                  context.read<CheckOutCubit>().activeStep + 1;
+              checkOutCubit.activeStep = checkOutCubit.activeStep + 1;
               setState(() {});
             }
           }
@@ -69,24 +73,10 @@ class _CheckOutViewState extends State<CheckOutView> {
             context.read<CheckOutCubit>().clearBasket();
           }
           if (state is DeleteBasketSuccess) {
-            Navigator.pop(context);
-            context.read<StoreCubit>().getBasketProducts();
-            if (context.read<CheckOutCubit>().selectedPayment ==
-                PaymentMethod.creditCard) {
-              Navigator.pushReplacementNamed(context, Routes.creditCard);
-            } else {
-              Navigator.pushReplacementNamed(context, Routes.successOrder);
-            }
+            whenDeleteBasketSuccessMethod(context);
           }
           if (state is AddOrderFailure) {
-            String errorMessage = state.error;
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(errorMessage),
-                backgroundColor: Colors.redAccent,
-                duration: const Duration(seconds: 3),
-              ),
-            );
+            whenAddOrderFailureMethod(state, context);
           }
         },
         builder: (context, state) {
@@ -95,11 +85,9 @@ class _CheckOutViewState extends State<CheckOutView> {
             child: SingleChildScrollView(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
-                // Set the mainAxisSize to MainAxisSize.min
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  CheckOutStateWidget(
-                      currentView: context.read<CheckOutCubit>().activeStep),
+                  CheckOutStateWidget(currentView: checkOutCubit.activeStep),
                   SizedBox(
                     height: 15.h,
                   ),
@@ -108,67 +96,22 @@ class _CheckOutViewState extends State<CheckOutView> {
                   SizedBox(
                     height: 2.h,
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text(
-                        'Addresses',
-                        style: TextStyle(
-                            color: Colors.black, fontWeight: FontWeight.bold),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pushNamed(
-                            context,
-                            Routes.address,
-                          );
-                        },
-                        style: ButtonStyle(
-                          overlayColor: MaterialStateColor.resolveWith(
-                              (Set<MaterialState> states) {
-                            return Colors
-                                .transparent; // Set the overlay color to be transparent
-                          }),
-                        ),
-                        child: Text(
-                          'New Address',
-                          style: TextStyle(
-                              color: AppColors.buttonColor,
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ],
-                  ),
-                  if (context.read<CheckOutCubit>().activeStep == 0)
-                    state is GetAddressSuccess || state is ChangeDefaultAddress
-                        ? Flexible(
-                            child: ListView.builder(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount:
-                                  context.read<CheckOutCubit>().address.length,
-                              itemBuilder: (context, index) {
-                                final address = context
-                                    .read<CheckOutCubit>()
-                                    .address[index];
-                                return AddressItem(
-                                  addressModel: address,
-                                );
-                              },
-                            ),
-                          )
+                  const HeaderAddressesSection(),
+                  if (checkOutCubit.activeStep == 0)
+                    state is GetAddressSuccess ||
+                            state is ChangeDefaultAddress ||
+                            state is AddAddressSuccess
+                        ? const AddressListView()
                         : const Center(
                             child: CircularProgressIndicator(),
                           ),
-                  if (context.read<CheckOutCubit>().activeStep == 2 ||
-                      context.read<CheckOutCubit>().activeStep == 1)
+                  if (checkOutCubit.activeStep == 2 ||
+                      checkOutCubit.activeStep == 1)
                     AddressItem(
-                      addressModel: context
-                          .read<CheckOutCubit>()
-                          .address
+                      addressModel: checkOutCubit.address
                           .firstWhere((element) => element.isDefault == true),
                     ),
-                  if (context.read<CheckOutCubit>().activeStep == 1)
+                  if (checkOutCubit.activeStep == 1)
                     Padding(
                       padding:
                           EdgeInsets.symmetric(horizontal: 7.w, vertical: 10.h),
@@ -177,9 +120,9 @@ class _CheckOutViewState extends State<CheckOutView> {
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ),
-                  if (context.read<CheckOutCubit>().activeStep == 1)
+                  if (checkOutCubit.activeStep == 1)
                     const PaymentMethodWidget(),
-                  if (context.read<CheckOutCubit>().activeStep == 2)
+                  if (checkOutCubit.activeStep == 2)
                     Padding(
                       padding:
                           EdgeInsets.symmetric(vertical: 6.h, horizontal: 7.w),
@@ -188,34 +131,14 @@ class _CheckOutViewState extends State<CheckOutView> {
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ),
-                  if (context.read<CheckOutCubit>().activeStep == 2)
-                    Card(
-                      elevation: 3.6,
-                      color: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: ListTile(
-                        leading: Icon(
-                          Icons.check_box,
-                          color: AppColors.buttonColor,
-                          size: 25.sp,
-                        ),
-                        title: Text(
-                          context.read<CheckOutCubit>().selectedPayment ==
-                                  PaymentMethod.cashOnDelivery
-                              ? 'Cash On Delivery (COD)'
-                              : 'Credit Card (VISA)',
-                          style: const TextStyle(color: Colors.black),
-                        ),
-                      ),
-                    ),
-                  if (context.read<CheckOutCubit>().activeStep == 2)
+                  if (checkOutCubit.activeStep == 2)
+                    ChoosenPaymentMethodWidget(cubit: checkOutCubit),
+                  if (checkOutCubit.activeStep == 2)
                     Padding(
                       padding: EdgeInsets.all(4.0.h),
                       child: const Text('Your Items'),
                     ),
-                  if (context.read<CheckOutCubit>().activeStep == 2)
+                  if (checkOutCubit.activeStep == 2)
                     CheckOutProductsListView(
                         products: context.read<StoreCubit>().basketProducts),
                 ],
@@ -226,27 +149,26 @@ class _CheckOutViewState extends State<CheckOutView> {
       ),
     );
   }
-}
 
-class AddressListView extends StatelessWidget {
-  const AddressListView({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Flexible(
-      child: ListView.builder(
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        itemCount: context.read<CheckOutCubit>().address.length,
-        itemBuilder: (context, index) {
-          final address = context.read<CheckOutCubit>().address[index];
-          return AddressItem(
-            addressModel: address,
-          );
-        },
+  void whenAddOrderFailureMethod(AddOrderFailure state, BuildContext context) {
+    String errorMessage = state.error;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(errorMessage),
+        backgroundColor: Colors.redAccent,
+        duration: const Duration(seconds: 3),
       ),
     );
+  }
+
+  void whenDeleteBasketSuccessMethod(BuildContext context) {
+    Navigator.pop(context);
+    context.read<StoreCubit>().getBasketProducts();
+    if (context.read<CheckOutCubit>().selectedPayment ==
+        PaymentMethod.creditCard) {
+      Navigator.pushReplacementNamed(context, Routes.creditCard);
+    } else {
+      Navigator.pushReplacementNamed(context, Routes.successOrder);
+    }
   }
 }

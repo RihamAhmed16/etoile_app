@@ -1,3 +1,5 @@
+import 'package:easy_localization/easy_localization.dart';
+import 'package:etoile_app/constance/translation_constance.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../constance/colors.dart';
@@ -18,7 +20,6 @@ class ProductItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     int quantity = 1;
-    double price = 0;
     return Padding(
       padding: EdgeInsets.only(bottom: 8.0.h),
       child: Container(
@@ -93,7 +94,7 @@ class ProductItem extends StatelessWidget {
                         radius: 9,
                         child: InkWell(
                           onTap: () {
-                            addProductToBasket(context, price, quantity,product);
+                            addProductToBasket(context, quantity,product);
                           },
                           child: const Icon(
                             Icons.add,
@@ -123,14 +124,14 @@ class ProductItem extends StatelessWidget {
                       Padding(
                         padding: EdgeInsets.only(left: 25.w),
                         child: Text(
-                          '${product.price}EGP',
+                          '${product.price}${TranslationConstance.currency.tr()}',
                           style: TextStyle(
                               fontWeight: FontWeight.w600, fontSize: 10.sp),
                         ),
                       ),
                       if (product.isDiscount == true)
                         Text(
-                          '${product.oldPrice.toString()} EGP',
+                          '${product.oldPrice.toString()} ${TranslationConstance.currency.tr()}',
                           style: const TextStyle(
                               color: Colors.grey,
                               overflow: TextOverflow.ellipsis,

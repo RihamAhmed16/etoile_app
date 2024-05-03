@@ -20,7 +20,11 @@ class EditAddressBlocListenerWidget extends StatelessWidget {
         }
         if (state is EditAddressSuccess) {
           Navigator.pop(context);
-          Navigator.pushReplacementNamed(context, Routes.checkOut);
+          Navigator.pushNamedAndRemoveUntil(
+            context,
+            Routes.checkOut,
+            (route) => false,
+          );
         }
         if (state is EditAddressFailure) {
           String errorMessage = state.error;

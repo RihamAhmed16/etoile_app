@@ -1,10 +1,13 @@
+import 'package:etoile_app/core/widgets/not_authorized_widget.dart';
 import 'package:etoile_app/presentation/screens/drawer/profile/widgets/profile_container.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../bussines_logic/auth_cubit/auth_cubit.dart';
 import '../../../../constance/colors.dart';
+import '../../../../core/DI/dependency_injecion.dart';
 import '../../../widgets/custom_button.dart';
 import '../../../widgets/text_form_widget.dart';
 
@@ -52,7 +55,8 @@ class _ProfileState extends State<Profile> {
       body: BlocBuilder<AuthCubit, AuthState>(
         builder: (context, state) {
           final userModel = context.read<AuthCubit>().userModel;
-          if (state is GetCurrentUserInformationSuccess && userModel != null) {
+          if (state is GetCurrentUserInformationSuccess &&
+              serviceLocator.get<FirebaseAuth>().currentUser != null) {
             return SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -61,7 +65,7 @@ class _ProfileState extends State<Profile> {
                     const ProfileContainer(),
                     SizedBox(height: 10.h),
                     Text(
-                      "${userModel.firstName}${userModel.lastName}",
+                      "${userModel!.firstName}${userModel.lastName}",
                       style: TextStyle(
                           fontWeight: FontWeight.w500, fontSize: 14.sp),
                     ),
@@ -178,12 +182,14 @@ class _ProfileState extends State<Profile> {
                 ),
               ),
             );
-          } else if (userModel == null) {
-            return const Center(
-              child:Text('something Went Wrong'),
+          } else if (serviceLocator.get<FirebaseAuth>().currentUser == null) {
+            return const NotAuthorizedWidget();
+          } else {
+            return Center(
+              child: CircularProgressIndicator(
+                color: AppColors.buttonColor,
+              ),
             );
-          }else {
-            return Center(child: CircularProgressIndicator(color: AppColors.buttonColor,),);
           }
         },
       ),

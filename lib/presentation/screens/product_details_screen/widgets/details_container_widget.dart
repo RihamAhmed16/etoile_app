@@ -1,3 +1,5 @@
+import 'package:easy_localization/easy_localization.dart';
+import 'package:etoile_app/constance/translation_constance.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -18,11 +20,10 @@ class DetailsContainerWidget extends StatelessWidget {
       clipBehavior: Clip.none,
       iconColor: AppColors.buttonColor,
       textColor: AppColors.buttonColor,
-      title: const Text('Details'),
+      title: Text(TranslationConstance.details.tr()),
       children: [
         Container(
-          padding:
-          EdgeInsets.symmetric(horizontal: 15.w, vertical: 15.h),
+          padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 15.h),
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(16),
               border: Border.all(
@@ -32,9 +33,9 @@ class DetailsContainerWidget extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  const Text(
-                    'Product Code: ',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                  Text(
+                    '${TranslationConstance.productCode.tr()} : ',
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                   Text(product.productCode),
                 ],
@@ -56,9 +57,9 @@ class DetailsContainerWidget extends StatelessWidget {
               ),
               Row(
                 children: [
-                  const Text(
-                    'Categories: ',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                  Text(
+                    '${TranslationConstance.categories.tr()} : ',
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                   Text(product.category),
                 ],

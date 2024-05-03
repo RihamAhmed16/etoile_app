@@ -69,7 +69,8 @@ class AddressItem extends StatelessWidget {
               child: IconButton(
                 alignment: Alignment.bottomCenter,
                 onPressed: () {
-                  Navigator.pushNamed(context,Routes.addressDetails,arguments: addressModel);
+                  Navigator.pushNamed(context, Routes.addressDetails,
+                      arguments: addressModel);
                 },
                 icon: const Icon(
                   Icons.edit_calendar_outlined,

@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import 'package:carousel_slider/carousel_controller.dart';
 
 class SliderP extends StatefulWidget {
-  SliderP({Key? key}) : super(key: key);
+  const SliderP({super.key});
 
   @override
   State<SliderP> createState() => _SliderPState();
@@ -24,7 +23,7 @@ class _SliderPState extends State<SliderP> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: MediaQuery.of(context).size.width,
       child: Stack(
         clipBehavior: Clip.none,
@@ -36,7 +35,7 @@ class _SliderPState extends State<SliderP> {
             itemCount: urlImages.length,
             itemBuilder: (context, index, realIndex) {
               final urlImage = urlImages[index];
-              return buildImage(urlImage, index,context);
+              return buildImage(urlImage, index, context);
             },
             options: CarouselOptions(
               aspectRatio: 3.4,
@@ -44,7 +43,7 @@ class _SliderPState extends State<SliderP> {
               disableCenter: true,
               animateToClosest: false,
               enlargeCenterPage: false,
-              enlargeFactor: 0.3,
+              viewportFraction: 1,
               enableInfiniteScroll: false,
               autoPlayAnimationDuration: const Duration(seconds: 2),
               onPageChanged: (index, reason) =>
@@ -95,12 +94,15 @@ class _SliderPState extends State<SliderP> {
   void animateToSlide(int index) => controller.animateToPage(index);
 }
 
-Widget buildImage(String urlImage, int index,BuildContext context) => Container(
+Widget buildImage(String urlImage, int index, BuildContext context) =>
+    Container(
       width: MediaQuery.of(context).size.width,
       margin: EdgeInsets.symmetric(horizontal: 5.w),
       decoration: BoxDecoration(
-        image:
-            DecorationImage(image: AssetImage(urlImage), fit: BoxFit.fitHeight),
+        image: DecorationImage(
+          image: AssetImage(urlImage),
+          fit: BoxFit.cover,
+        ),
         borderRadius: BorderRadius.circular(16),
       ),
     );

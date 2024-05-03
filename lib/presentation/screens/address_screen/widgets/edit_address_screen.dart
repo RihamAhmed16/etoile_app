@@ -183,7 +183,7 @@ class _EditAddressScreenState extends State<EditAddressScreen> {
                   EditDropDownFormFieldWidget(
                     items: cityItems,
                     isCity: true,
-                    hintText:widget.addressModel!.city,
+                    hintText: widget.addressModel!.city,
                   ),
                   SizedBox(
                     height: MediaQuery.of(context).size.height * .02,
@@ -215,8 +215,7 @@ class _EditAddressScreenState extends State<EditAddressScreen> {
 
   void updateAddressDetails(BuildContext context) {
     context.read<CheckOutCubit>().editAddressDetails(
-        addressId: widget.addressModel!.id,
-        addressModel: AddressModel(
+          addressModel: AddressModel(
             firstName: firstNameController.text,
             lastName: lastNameController.text,
             orderType: context.read<CheckOutCubit>().orderPlace == ''
@@ -231,6 +230,8 @@ class _EditAddressScreenState extends State<EditAddressScreen> {
                 : context.read<CheckOutCubit>().city,
             phoneNumber: mobileNumberController.text,
             id: widget.addressModel!.id,
-            isDefault: widget.addressModel!.isDefault));
+            isDefault: widget.addressModel!.isDefault,
+          ),
+        );
   }
 }

@@ -1,6 +1,8 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:etoile_app/bussines_logic/home_cubit/home_cubit.dart';
 import 'package:etoile_app/constance/colors.dart';
 import 'package:etoile_app/constance/strings.dart';
+import 'package:etoile_app/constance/translation_constance.dart';
 import 'package:etoile_app/data/models/category_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,9 +16,9 @@ class DrawerCategories extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 250, 250, 250),
       appBar: AppBar(
-        title: const Text(
-          'Categories',
-          style: TextStyle(color: Colors.black87),
+        title: Text(
+          TranslationConstance.categories.tr(),
+          style: const TextStyle(color: Colors.black87),
         ),
       ),
       body: GridView.builder(

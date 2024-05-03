@@ -5,7 +5,7 @@ import 'package:etoile_app/data/models/cart_model.dart';
 class OrderModel {
   String orderId;
   AddressModel address;
-  List<CartModel> basketItems;
+  List<CartProduct> basketItems;
   Timestamp createdAt;
   String status;
   String paymentMethod;
@@ -24,8 +24,8 @@ class OrderModel {
 
   factory OrderModel.fromJson(Map<String, dynamic> json) {
     List<dynamic> basketItemsJson = json['basketItems'];
-    List<CartModel> basketItems =
-        basketItemsJson.map((item) => CartModel.fromJson(item)).toList();
+    List<CartProduct> basketItems =
+        basketItemsJson.map((item) => CartProduct.fromJson(item)).toList();
 
     return OrderModel(
       orderId: json['orderId'],

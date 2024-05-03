@@ -9,7 +9,7 @@ class CheckOutProductsListView extends StatelessWidget {
   const CheckOutProductsListView({
     super.key, required this.products,
   });
-final List<CartModel> products;
+final List<CartProduct> products;
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -34,7 +34,7 @@ class CheckoutProductItem extends StatelessWidget {
     required this.cartModel,
   });
 
-  final CartModel cartModel;
+  final CartProduct cartModel;
 
   @override
   Widget build(BuildContext context) {

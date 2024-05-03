@@ -1,10 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:etoile_app/constance/translation_constance.dart';
+import 'package:etoile_app/core/DI/dependency_injecion.dart';
 import 'package:etoile_app/data/models/cart_model.dart';
 import 'package:etoile_app/data/models/category_model.dart';
 import 'package:etoile_app/data/models/product_model.dart';
 import 'package:etoile_app/data/models/user_model.dart';
+import 'package:etoile_app/data/repository/address_repo.dart';
 import 'package:etoile_app/data/repository/store_repo.dart';
-import 'package:etoile_app/helper/cach_helper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,15 +17,17 @@ import '../../data/models/address_model.dart';
 part 'home_state.dart';
 
 class StoreCubit extends Cubit<StoreState> {
-  StoreCubit(this.storeRepo) : super(HomeInitial());
+  StoreCubit(this.storeRepo, this.addressRepo) : super(HomeInitial());
   StoreRepo storeRepo;
+  AddressRepo addressRepo;
   UserModel? userModel;
   double totalPrice = 0;
-  List<Products> bestSeller = [];
+  List<Products> subListBestSeller = [];
+  List<Products> allBestSeller = [];
   List<CategoryModel> firstSections = [];
   List<CategoryModel> secondSections = [];
   List<CategoryModel> categories = [];
-  List<CartModel> basketProducts = [];
+  List<CartProduct> basketProducts = [];
   List<String> productsId = [];
   List<AddressModel> address = [];
   List<Products> allProducts = [];
@@ -30,8 +35,8 @@ class StoreCubit extends Cubit<StoreState> {
   bool isSearching = false;
   TextEditingController searchTerm = TextEditingController();
   Products? productDetails;
-  CategoryModel discount =
-      CategoryModel(name: 'Discount', categoryProducts: [], id: -1);
+  CategoryModel discount = CategoryModel(
+      name: TranslationConstance.discount.tr(), categoryProducts: [], id: -1);
 
   Future<void> getProductDetails({required String productId}) async {
     emit(GetProductDetailsLoading());
@@ -42,36 +47,36 @@ class StoreCubit extends Cubit<StoreState> {
   }
 
   Future<void> getBasketProducts() async {
-    emit(GetBasketsLoadingState());
-    await storeRepo.getBasketProducts().then((value) {
-      basketProducts = value;
-      totalPrice = value.fold(
-          0.0, (double accumulator, element) => accumulator + element.price);
-      emit(GetBasketSuccessState());
-    }).catchError((error) {
-      print(error.toString());
-      emit(GetBasketFailureState(error: error.toString()));
-    });
+    if (serviceLocator.get<FirebaseAuth>().currentUser != null) {
+      emit(GetBasketsLoadingState());
+      await storeRepo.getBasketProducts().then((value) {
+        basketProducts = value;
+        totalPrice = value.fold(
+            0.0,
+            (double accumulator, element) =>
+                accumulator + (element.price * element.quantity));
+        emit(GetBasketSuccessState());
+      }).catchError((error) {
+        print(error.toString());
+        emit(GetBasketFailureState(error: error.toString()));
+      });
+    } else {
+      return;
+    }
   }
 
-  Future<void> removeFromBasket({required CartModel cartModel}) async {
+  Future<void> removeFromBasket({required CartProduct cartModel}) async {
     emit(RemoveFromBasketLoading());
     await storeRepo.deleteFromBasket(cartModel: cartModel).then((value) {
-      int cartCount = CashHelper.getData(key: 'cartCount');
-      CashHelper.saveData(
-          key: 'cartCount', value: cartCount - (1 * cartModel.quantity));
       emit(RemoveFromBasketSuccess());
     }).catchError((error) {
       emit(RemoveFromBasketFailure(error: error.toString()));
     });
   }
 
-  Future<void> addToBasket({required CartModel cartModel}) async {
+  Future<void> addToBasket({required CartProduct cartModel}) async {
     emit(AddToBasketLoading());
     await storeRepo.addToBasket(cartModel: cartModel).then((value) async {
-      int cartCount = CashHelper.getData(key: 'cartCount') ?? 0;
-      CashHelper.saveData(
-          key: 'cartCount', value: cartCount + cartModel.quantity);
       emit(AddToBasketSuccess());
     }).catchError((error) {
       print(error.toString());
@@ -80,29 +85,27 @@ class StoreCubit extends Cubit<StoreState> {
   }
 
   Future<void> getBestSeller() async {
+    subListBestSeller.clear();
+    allBestSeller.clear();
     emit(BestSellerLoadingState());
-    if (bestSeller.isEmpty) {
-      await storeRepo.getBestSellerProducts().then((value) {
-        bestSeller = value
-            .where((element) => element.isBestSeller == true)
-            .toList()
-            .sublist(0, 4);
-        print(bestSeller.first.image);
-        emit(BestSellerSuccessState());
-      });
-    } else {
-      return;
-    }
+    await storeRepo.getBestSellerProducts().then((value) {
+      subListBestSeller = value
+          .where((element) => element.isBestSeller == true)
+          .toList()
+          .sublist(0, 4);
+      allBestSeller =
+          value.where((element) => element.isBestSeller == true).toList();
+      print(subListBestSeller.first.image);
+      emit(BestSellerSuccessState());
+    });
   }
 
   Future<void> updateProductQuantity(
       {required String productId,
       required int quantity,
-      required String price}) async {
-    final fireStore = FirebaseFirestore.instance;
-    final currentUser = FirebaseAuth.instance.currentUser!.uid;
-    double numericPrice = double.parse(price);
-    int cartCount = CashHelper.getData(key: 'cartCount') ?? 0;
+      required double price}) async {
+    final fireStore = serviceLocator.get<FirebaseFirestore>();
+    final currentUser = serviceLocator.get<FirebaseAuth>().currentUser!.uid;
     print(currentUser.toString());
     emit(AddToBasketLoading());
     await fireStore
@@ -112,29 +115,59 @@ class StoreCubit extends Cubit<StoreState> {
         .doc(productId)
         .update({
       'quantity': FieldValue.increment(quantity),
-      'price': FieldValue.increment(numericPrice),
+      'price': FieldValue.increment(price),
     }).then((value) {
-      CashHelper.saveData(key: 'cartCount', value: cartCount + quantity);
       emit(AddToBasketSuccess());
     });
   }
 
+  Future<void> decreaseQuantityAndPrice(
+      {required CartProduct productCart}) async {
+    emit(UpdateQuantityLoading());
+    final fireStore = serviceLocator.get<FirebaseFirestore>();
+    final currentUser = serviceLocator.get<FirebaseAuth>().currentUser!.uid;
+    await fireStore
+        .collection('users')
+        .doc(currentUser)
+        .collection('cart')
+        .doc(productCart.productId)
+        .update({
+      'quantity': productCart.quantity - 1,
+    }).then((value) {
+      emit(UpdateQuantitySuccess());
+    });
+  }
+
+  Future<void> incrementQuantityAndPrice(
+      {required CartProduct productCart}) async {
+    emit(UpdateQuantityLoading());
+    final fireStore = serviceLocator.get<FirebaseFirestore>();
+    final currentUser = serviceLocator.get<FirebaseAuth>().currentUser!.uid;
+    await fireStore
+        .collection('users')
+        .doc(currentUser)
+        .collection('cart')
+        .doc(productCart.productId)
+        .update({
+      'quantity': productCart.quantity + 1,
+    }).then((value) {
+      emit(UpdateQuantitySuccess());
+    });
+  }
+
   Future<void> getCategories() async {
+    categories.clear();
     emit(CategoriesLoadingState());
-    if (categories.isEmpty) {
-      await FirebaseFirestore.instance
-          .collection('categories')
-          .get()
-          .then((value) {
-        for (var element in value.docs) {
-          categories.add(CategoryModel.fromJson(element.data()));
-        }
-        seperateCategoriesList(sections: categories);
-        emit(CategoriesSuccessState());
-      });
-    } else {
-      return;
-    }
+    await FirebaseFirestore.instance
+        .collection('categories')
+        .get()
+        .then((value) {
+      for (var element in value.docs) {
+        categories.add(CategoryModel.fromJson(element.data()));
+      }
+      seperateCategoriesList(sections: categories);
+      emit(CategoriesSuccessState());
+    });
   }
 
   void sortingProducts(
@@ -200,8 +233,6 @@ class StoreCubit extends Cubit<StoreState> {
         for (var product in value) {
           discount.categoryProducts!.add(product);
         }
-      }).catchError((error) {
-        emit(ProductsErrorState(error: error.toString()));
       });
     } else {
       await storeRepo
@@ -213,8 +244,6 @@ class StoreCubit extends Cubit<StoreState> {
                 .addAll(value.where((element) => element.isDiscount == false));
           }
         }
-      }).catchError((error) {
-        emit(ProductsErrorState(error: error.toString()));
       });
     }
     emit(ProductsSuccessState());
@@ -256,5 +285,17 @@ class StoreCubit extends Cubit<StoreState> {
     searchedProducts.clear();
     isSearching = false;
     emit(ClearSearchedProductsList());
+  }
+
+  Future<void> getAllAddresses() async {
+    if (serviceLocator.get<FirebaseAuth>().currentUser != null) {
+      emit(GetAllAddressesLoading());
+      await addressRepo.getAddress().then((value) {
+        address = value;
+        emit(GetAllProductsSuccessState());
+      }).catchError((error) {
+        print(error);
+      });
+    }
   }
 }

@@ -1,4 +1,7 @@
+import 'package:easy_localization/easy_localization.dart';
+import 'package:etoile_app/constance/app_styles.dart';
 import 'package:etoile_app/constance/strings.dart';
+import 'package:etoile_app/constance/translation_constance.dart';
 import 'package:etoile_app/data/models/product_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -14,7 +17,6 @@ class ProductItemForListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     int quantity = 1;
-    double price = 0;
     return InkWell(
       onTap: () {
         Navigator.pushNamed(context, Routes.productDetailsScreen,
@@ -34,7 +36,7 @@ class ProductItemForListView extends StatelessWidget {
                 radius: 9,
                 child: InkWell(
                   onTap: () {
-                    addProductToBasket(context, price, quantity, product);
+                    addProductToBasket(context, quantity, product);
                   },
                   child: const Icon(
                     Icons.add,
@@ -66,15 +68,19 @@ class ProductItemForListView extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                         color: Colors.black54,
                         fontSize: 14.sp,
+                        fontFamily: AppStyles.almaraiFontFamily,
                       ),
                     ),
                     SizedBox(
                       height: 8.h,
                     ),
                     Text(
-                      '${product.price} EGP',
-                      style:  TextStyle(
-                          fontWeight: FontWeight.w900, color:AppColors.lightBlack),
+                      '${product.price} ${TranslationConstance.currency.tr()}',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w900,
+                        color: AppColors.lightBlack,
+                        fontFamily: AppStyles.almaraiFontFamily,
+                      ),
                     ),
                   ],
                 ),

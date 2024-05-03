@@ -37,10 +37,31 @@ class ErrorPhoneOtpVerifiedAuthState extends AuthState {
 }
 
 class GetCurrentUserInformationLoading extends AuthState {}
+
 class GetCurrentUserInformationSuccess extends AuthState {}
+
 class GetCurrentUserInformationFailure extends AuthState {
   final String error;
 
   GetCurrentUserInformationFailure({required this.error});
 }
 
+class ForgerPasswordLoading extends AuthState {}
+
+class ForgerPasswordSuccess extends AuthState {}
+
+class ForgerPasswordFailure extends AuthState {
+  final String error;
+
+  ForgerPasswordFailure({required this.error});
+}
+
+class SuccessLogOut extends AuthState {}
+
+class LoadingLogOut extends AuthState {}
+
+class FailureLogOut extends AuthState {
+  final String error;
+
+  FailureLogOut({required this.error});
+}

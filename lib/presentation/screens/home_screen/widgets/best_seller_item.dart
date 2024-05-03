@@ -1,13 +1,18 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:etoile_app/constance/colors.dart';
 import 'package:etoile_app/constance/strings.dart';
+import 'package:etoile_app/constance/translation_constance.dart';
+import 'package:etoile_app/core/helper/methods/add_product_to_basket.dart';
 import 'package:etoile_app/data/models/product_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+
 class BestSellerItem extends StatelessWidget {
   const BestSellerItem({super.key, required this.bestSellerModel});
 
-final Products bestSellerModel;
+  final Products bestSellerModel;
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -32,8 +37,9 @@ final Products bestSellerModel;
           Expanded(
             flex: 3,
             child: InkWell(
-              onTap: (){
-                Navigator.pushNamed(context, Routes.productDetailsScreen,arguments: bestSellerModel.productId);
+              onTap: () {
+                Navigator.pushNamed(context, Routes.productDetailsScreen,
+                    arguments: bestSellerModel.productId);
               },
               child: Container(
                 decoration: const BoxDecoration(),
@@ -46,27 +52,32 @@ final Products bestSellerModel;
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                CircleAvatar(
-                  backgroundColor: AppColors.buttonColor,
-                  foregroundColor: AppColors.buttonColor,
-                  radius: 9,
-                  child: const Icon(
-                    Icons.add,
-                    size: 15,
-                    color: Colors.white,
+                InkWell(
+                  onTap: () {
+                    addProductToBasket(context, 1, bestSellerModel);
+                  },
+                  child: CircleAvatar(
+                    backgroundColor: AppColors.buttonColor,
+                    foregroundColor: AppColors.buttonColor,
+                    radius: 9,
+                    child: const Icon(
+                      Icons.add,
+                      size: 15,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
                 SizedBox(
                   width: 10.w,
                 ),
-                 Expanded(child: Text(bestSellerModel.name)),
+                Expanded(child: Text(bestSellerModel.name)),
               ],
             ),
           ),
           Padding(
             padding: EdgeInsets.only(left: 15.w),
-            child:  Text(
-              '${bestSellerModel.price} EGP',
+            child: Text(
+              '${bestSellerModel.price} ${TranslationConstance.currency.tr()}',
               style: const TextStyle(fontWeight: FontWeight.w700),
             ),
           ),

@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../constance/test_list.dart';
+import '../../../core/helper/methods/toast_message.dart';
 import '../../../core/widgets/home_appbar.dart';
 import '../drawer/drawer.dart';
 import 'widgets/best_seller_item.dart';
@@ -35,7 +36,7 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: const MyHomePage(),
+      drawer: const MyDrawer(),
       body: SafeArea(
         child: Column(
           children: [
@@ -56,7 +57,7 @@ class _HomeState extends State<Home> {
                     child: CustomScrollView(
                       physics: const BouncingScrollPhysics(),
                       slivers: [
-                        SliverToBoxAdapter(
+                        const SliverToBoxAdapter(
                           child: SliderP(),
                         ),
                         SliverToBoxAdapter(
@@ -73,13 +74,15 @@ class _HomeState extends State<Home> {
                                   .firstSections[index],
                               image: imagesForFirstListOfCategories[index],
                             ),
-                            childCount:
-                                context.read<StoreCubit>().firstSections.length,
+                            childCount: context
+                                .read<StoreCubit>()
+                                .firstSections
+                                .length,
                           ),
                         ),
                         SliverToBoxAdapter(
                           child: BestSellerWidget(
-                            bestSeller: context.read<StoreCubit>().bestSeller,
+                            bestSeller: context.read<StoreCubit>().subListBestSeller,
                           ),
                         ),
                         SliverList(
@@ -129,22 +132,45 @@ class BestSellerWidget extends StatelessWidget {
               Text(
                 'Best Seller',
                 style: TextStyle(
-                    fontWeight: FontWeight.w600, color: AppColors.buttonColor),
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.buttonColor),
               ),
               const Text('See All'),
             ],
           ),
         ),
-        SizedBox(
-          height: 250.h,
-          child: ListView.builder(
-            itemCount: bestSeller.length,
-            scrollDirection: Axis.horizontal,
-            physics: const BouncingScrollPhysics(),
-            itemBuilder: (context, index) => Padding(
-              padding: EdgeInsets.only(left: 8.0.w),
-              child: BestSellerItem(
-                bestSellerModel: context.read<StoreCubit>().bestSeller[index],
+        BlocListener<StoreCubit, StoreState>(
+          listener: (context, state) {
+            if (state is AddToBasketLoading) {
+              showDialog(
+                context: context,
+                builder: (context) => Center(
+                  child: CircularProgressIndicator(
+                    color: AppColors.buttonColor,
+                  ),
+                ),
+              );
+            }
+            if (state is AddToBasketSuccess) {
+              Navigator.pop(context);
+              showToast(
+                  text:
+                      'The product has been added to your cart Successfully',
+                  state: Toaststate.SUCCESS);
+            }
+          },
+          child: SizedBox(
+            height: 250.h,
+            child: ListView.builder(
+              itemCount: bestSeller.length,
+              scrollDirection: Axis.horizontal,
+              physics: const BouncingScrollPhysics(),
+              itemBuilder: (context, index) => Padding(
+                padding: EdgeInsets.only(left: 8.0.w),
+                child: BestSellerItem(
+                  bestSellerModel:
+                      context.read<StoreCubit>().subListBestSeller[index],
+                ),
               ),
             ),
           ),

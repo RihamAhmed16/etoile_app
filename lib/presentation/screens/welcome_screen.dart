@@ -11,22 +11,23 @@ class Welcome extends StatefulWidget {
 
 class _WelcomeState extends State<Welcome> {
   @override
-   initState(){
-startTimer();
+  initState() {
+    startTimer();
     super.initState();
-
   }
 
-  startTimer(){
-    var duration= const Duration(seconds:2);
-    return Timer(duration,route);
+  startTimer() {
+    var duration = const Duration(seconds: 2);
+    return Timer(duration, route);
   }
-  route(){
+
+  route() {
     Navigator.of(context).pushReplacementNamed("/login");
   }
+
   @override
   Widget build(BuildContext context) {
-    return  Stack(
+    return Stack(
       children: [
         Positioned.fill(
           child: Image.asset(
@@ -41,10 +42,7 @@ startTimer();
             //fit: BoxFit.contain,
           ),
         ),
-        
-        
       ],
-      
     );
   }
 }

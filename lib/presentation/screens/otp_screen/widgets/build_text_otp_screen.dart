@@ -10,7 +10,7 @@ class BuildIntroText extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+         Text(
           'Verify your Phone Number',
           style: AppStyles.textStyle24,
         ),

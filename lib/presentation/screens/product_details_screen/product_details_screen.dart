@@ -28,7 +28,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<StoreCubit, StoreState>(
-      listenWhen: (previous,current)=>previous!= current,
+      listenWhen: (previous, current) => previous != current,
       listener: (context, state) {
         if (state is AddToBasketLoading) {
           showDialog(
@@ -42,12 +42,10 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
         }
         if (state is AddToBasketSuccess) {
           Navigator.pop(context);
-          // showToast(
-          //     text: 'The product has been added to your cart Successfully',
-          //     state: Toaststate.SUCCESS);
         }
       },
       builder: (context, state) {
+        var cubit = BlocProvider.of<StoreCubit>(context);
         return state is GetProductDetailsLoading
             ? Center(
                 child: CircularProgressIndicator(
@@ -55,14 +53,16 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                 ),
               )
             : Scaffold(
-                bottomNavigationBar: AddToCartButton(
-                    product:
-                        BlocProvider.of<StoreCubit>(context).productDetails!),
+                bottomNavigationBar:
+                    AddToCartButton(product: cubit.productDetails!),
                 backgroundColor: const Color.fromARGB(255, 250, 250, 250),
-                appBar: AppBar(),
+                appBar: AppBar(
+                  title: Text(cubit.productDetails!.name),
+                ),
                 body: ProductDetailsBody(
-                    product:
-                        BlocProvider.of<StoreCubit>(context).productDetails!));
+                  product: cubit.productDetails!,
+                ),
+              );
       },
     );
   }

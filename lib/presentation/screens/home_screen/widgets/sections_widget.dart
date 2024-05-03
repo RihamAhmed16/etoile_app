@@ -1,4 +1,6 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:etoile_app/constance/strings.dart';
+import 'package:etoile_app/constance/translation_constance.dart';
 import 'package:etoile_app/data/models/category_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -74,7 +76,7 @@ class Sections extends StatelessWidget {
                 child: CustomButton(
                     width: double.infinity,
                     verticalPadding: 8.h,
-                    text: 'Order Now',
+                    text:TranslationConstance.orderNow.tr(),
                     buttonColor: AppColors.buttonColor),
               ),
             ],

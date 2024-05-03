@@ -12,11 +12,11 @@ class OnBoardScreen extends StatefulWidget {
   const OnBoardScreen({super.key});
 
   @override
-  _OnBoardScreenState createState() => _OnBoardScreenState();
+  State<OnBoardScreen> createState() => _OnBoardScreenState();
 }
 
 class _OnBoardScreenState extends State<OnBoardScreen> {
-  PageController _controller = PageController();
+  final PageController _controller = PageController();
 
   bool isLast = false;
 
@@ -108,7 +108,7 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
                     child: CustomButton(
                       text: 'Sign Up',
                       onPressed: (){
-                        Navigator.pushNamed(context, Routes.signUpScreen);
+                        Navigator.pushNamed(context, Routes.loginScreen);
                       },
                       width: double.infinity,
                       buttonColor: AppColors.lightBlack,

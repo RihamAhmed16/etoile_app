@@ -1,3 +1,5 @@
+import 'package:easy_localization/easy_localization.dart';
+import 'package:etoile_app/constance/translation_constance.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../constance/colors.dart';
@@ -15,7 +17,7 @@ class ProductDescriptionWidget extends StatelessWidget {
       clipBehavior: Clip.none,
       iconColor: AppColors.buttonColor,
       textColor: AppColors.buttonColor,
-      title: const Text('Description'),
+      title:  Text(TranslationConstance.descriptions.tr()),
       children: [
         ListTile(
           title: Text(productDescription),
